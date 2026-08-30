@@ -474,6 +474,7 @@ function render() {
               .join("")}
           </div>
           <button class="${state.page === "quiz" ? "active" : ""}" data-go="quiz">Quiz</button>
+          <span class="nav-break" aria-hidden="true"></span>
           <div class="nav-side nav-right">
             ${NAV.slice(3)
               .map((item) => {
