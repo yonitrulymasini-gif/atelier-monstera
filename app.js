@@ -111,9 +111,9 @@ function photoBlock(s, alt) {
 }
 
 const HOME_BLURB = {
-  deliciosa: "Une liane tropicale, souvent cultivée en intérieur.",
-  obliqua: "Une Monstera de forêt, dans le même genre que les autres.",
-  adansonii: "Une petite liane d’intérieur, très répandue.",
+  deliciosa: "C’est une Monstera.",
+  obliqua: "C’est une Monstera.",
+  adansonii: "C’est une Monstera.",
 };
 
 function renderHome() {
