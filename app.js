@@ -111,9 +111,9 @@ function photoBlock(s, alt) {
 }
 
 const HOME_BLURB = {
-  deliciosa: "C’est une Monstera.",
-  obliqua: "C’est une Monstera.",
-  adansonii: "C’est une Monstera.",
+  deliciosa: "Grandes feuilles vertes, d’abord entières, puis découpées et trouées.",
+  obliqua: "Feuilles très percées, presque ajourées, plus délicates.",
+  adansonii: "Feuilles plus petites, trouées au milieu, sans grandes fentes.",
 };
 
 function renderHome() {
