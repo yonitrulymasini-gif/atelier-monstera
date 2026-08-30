@@ -984,8 +984,8 @@ window.MONSTERA_CATALOG = [
     name: "Monstera deliciosa ‘Aurea’",
     common: ["Aurea", "Marmorata", "jaune"],
     origin: "Mutation de deliciosa, secteurs jaunes / dorés",
-    image: inatAll(440784742),
-    credit: "iNaturalist",
+    image: "photos/aurea.png",
+    credit: "Planche botanique",
     difficulty: "Avancé",
     kind: "cultivar",
     summary:
