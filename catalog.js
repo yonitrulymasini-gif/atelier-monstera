@@ -49,7 +49,7 @@ window.MONSTERA_CATALOG = [
     image: wiki("Monstera deliciosa (Monaco).jpg"),
     credit: "Wikimedia Commons",
     summary:
-      "C’est la Monstera que tout le monde reconnaît : grandes feuilles en cœur qui se découpent sur les bords, puis se percent. Celle des salons — pas celle qui donne son nom au genre.",
+      "Grandes feuilles en cœur : d’abord entières, puis fendues sur les bords, puis trouées. C’est celle du salon.",
     description:
       "Si tu imagines une Monstera, c’est presque toujours celle-ci. Petite, sa feuille est entière, comme un cœur. En grandissant, avec de la lumière et un tuteur, le bord se fend, puis des trous apparaissent au milieu. En forêt elle grimpe très haut. Chez toi, compte plutôt 2 ou 3 mètres. Le fruit mûr rappelle souvent l’ananas ; encore vert, il irrite (oxalates). Ce n’est pas l’espèce « type » du genre : ce rôle revient à adansonii.",
     traits: ["Espèce acceptée", "La plus cultivée", "Fentes + trous", "Fruit mûr seulement"],
@@ -66,7 +66,7 @@ window.MONSTERA_CATALOG = [
     image: wiki("Monstera adansonii - Mickaël Schauli - 1.jpg"),
     credit: "Wikimedia Commons / Mickaël Schauli",
     summary:
-      "La petite liane aux trous au milieu de la feuille. Très courante, et souvent vendue à tort sous le nom obliqua. C’est l’espèce type du genre.",
+      "Petite liane, trous au centre, pas de grandes fentes. Très courante — et trop souvent vendue « obliqua ».",
     description:
       "Regarde le centre de la feuille : adansonii est trouée comme un fromage, sans les grandes fentes de deliciosa. Facile, elle grimpe bien. Kew et l’IPNI en font l’espèce de référence du genre, même si deliciosa est plus célèbre. Quatre sous-espèces existent. En magasin, l’étiquette « obliqua » lui est souvent collée.",
     traits: ["Espèce type", "Très courante", "Trous au centre"],
@@ -133,7 +133,7 @@ window.MONSTERA_CATALOG = [
     image: wiki('Monstera Obliqua "Peru" - Mickaël Schauli - 2.jpg'),
     credit: "Wikimedia Commons / Mickaël Schauli",
     summary:
-      "Oui, l’espèce existe. Non, le pot à 15 € « Obliqua Peru » n’est pas une relique. Souvent, c’est une adansonii avec une autre étiquette.",
+      "L’espèce est réelle. Le pot à 15 € « Obliqua Peru », presque jamais : c’est en général une adansonii mal nommée.",
     description:
       "On raconte encore qu’obliqua n’aurait été vue que 17 fois. C’est une vieille idée (Madison 1977) : l’espèce a une large aire. Le godet « ultra ajouré » de jardinerie n’est pas une rareté, et le nom est souvent celui d’une adansonii. Les deux ont des trous au milieu, pas les fentes de deliciosa.",
     traits: ["Espèce acceptée", "Nom souvent mélangé"],
