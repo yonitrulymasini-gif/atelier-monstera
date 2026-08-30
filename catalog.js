@@ -48,8 +48,7 @@ window.MONSTERA_CATALOG = [
     water: "Quand le haut du terreau a un peu séché",
     image: wiki("Monstera deliciosa (Monaco).jpg"),
     credit: "Wikimedia Commons",
-    summary:
-      "Grandes feuilles en cœur : d’abord entières, puis fendues sur les bords, puis trouées. C’est celle du salon.",
+    summary: "Une liane tropicale, souvent cultivée en intérieur.",
     description:
       "Si tu imagines une Monstera, c’est presque toujours celle-ci. Petite, sa feuille est entière, comme un cœur. En grandissant, avec de la lumière et un tuteur, le bord se fend, puis des trous apparaissent au milieu. En forêt elle grimpe très haut. Chez toi, compte plutôt 2 ou 3 mètres. Le fruit mûr rappelle souvent l’ananas ; encore vert, il irrite (oxalates). Ce n’est pas l’espèce « type » du genre : ce rôle revient à adansonii.",
     traits: ["Espèce acceptée", "La plus cultivée", "Fentes + trous", "Fruit mûr seulement"],
@@ -65,8 +64,7 @@ window.MONSTERA_CATALOG = [
     water: "Légèrement humide, jamais d’eau stagnante",
     image: wiki("Monstera adansonii - Mickaël Schauli - 1.jpg"),
     credit: "Wikimedia Commons / Mickaël Schauli",
-    summary:
-      "Petite liane, trous au centre, pas de grandes fentes. Très courante — et trop souvent vendue « obliqua ».",
+    summary: "Une petite liane d’intérieur, très répandue.",
     description:
       "Regarde le centre de la feuille : adansonii est trouée comme un fromage, sans les grandes fentes de deliciosa. Facile, elle grimpe bien. Kew et l’IPNI en font l’espèce de référence du genre, même si deliciosa est plus célèbre. Quatre sous-espèces existent. En magasin, l’étiquette « obliqua » lui est souvent collée.",
     traits: ["Espèce type", "Très courante", "Trous au centre"],
@@ -132,8 +130,7 @@ window.MONSTERA_CATALOG = [
     difficulty: "Facile pour le plant de magasin",
     image: wiki('Monstera Obliqua "Peru" - Mickaël Schauli - 2.jpg'),
     credit: "Wikimedia Commons / Mickaël Schauli",
-    summary:
-      "L’espèce est réelle. Le pot à 15 € « Obliqua Peru », presque jamais : c’est en général une adansonii mal nommée.",
+    summary: "Une Monstera de forêt, dans le même genre que les autres.",
     description:
       "On raconte encore qu’obliqua n’aurait été vue que 17 fois. C’est une vieille idée (Madison 1977) : l’espèce a une large aire. Le godet « ultra ajouré » de jardinerie n’est pas une rareté, et le nom est souvent celui d’une adansonii. Les deux ont des trous au milieu, pas les fentes de deliciosa.",
     traits: ["Espèce acceptée", "Nom souvent mélangé"],

@@ -111,9 +111,9 @@ function photoBlock(s, alt) {
 }
 
 const HOME_BLURB = {
-  deliciosa: "Feuilles d’abord entières, puis découpées sur les bords, puis percées. Celle qu’on voit partout.",
-  obliqua: "Elle existe. Le « Obliqua » pas cher du magasin, non : c’est presque toujours une adansonii.",
-  adansonii: "Trous au milieu seulement. C’est elle l’espèce type — pas deliciosa.",
+  deliciosa: "Une liane tropicale, souvent cultivée en intérieur.",
+  obliqua: "Une Monstera de forêt, dans le même genre que les autres.",
+  adansonii: "Une petite liane d’intérieur, très répandue.",
 };
 
 function renderHome() {
