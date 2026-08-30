@@ -760,29 +760,38 @@ footer {
 
 @media (max-width: 980px) {
   :root {
-    --header-space: 7.6rem;
+    --header-space: 10.5rem;
   }
 
   .top {
-    padding: 0.85rem 4vw 0;
-    gap: 0.5rem;
+    padding: 1rem 5vw 0;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    font-size: 1.15rem;
   }
 
   nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    column-gap: 0.45rem;
-    padding-bottom: 0.7rem;
-    margin-bottom: 1.1rem;
+    column-gap: 0;
+    row-gap: 0.15rem;
+    padding-bottom: 0.95rem;
+    margin-bottom: 1.2rem;
   }
 
   .nav-side {
-    flex-wrap: nowrap;
-    gap: 0.45rem;
+    display: contents;
   }
 
   nav button {
-    font-size: 0.56rem;
-    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    padding: 0.55rem 0.7rem;
     white-space: nowrap;
   }
 
@@ -797,13 +806,13 @@ footer {
   }
 
   .hero {
-    padding: 1.6rem 5vw 1rem;
-    gap: 1.4rem;
+    padding: 1.4rem 6vw 1.2rem;
+    gap: 1.6rem;
   }
 
   .hero img,
   .portrait img {
-    height: 280px;
+    height: 260px;
     border-radius: 24px;
   }
 
@@ -811,22 +820,43 @@ footer {
     position: static;
   }
 
-  .section {
-    padding: 1.8rem 5vw 0.8rem;
+  .lede {
+    font-size: 1.02rem;
   }
 
   .actions {
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .cta {
+    text-align: center;
+    padding: 0.95rem 1.1rem;
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 2rem 6vw 1rem;
   }
 
   .grid.trio,
   .grid {
-    gap: 1rem;
+    gap: 1.15rem;
   }
 
   .card-media img,
   .card-media .no-photo {
-    height: 220px;
+    height: 240px;
+  }
+
+  .card-body {
+    padding: 1.05rem 1.1rem 1.2rem;
+  }
+
+  .fiche-body {
+    padding: 1.6rem 6vw 2.4rem;
+    justify-content: flex-start;
   }
 }
 
