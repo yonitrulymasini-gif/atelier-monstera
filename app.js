@@ -110,6 +110,12 @@ function photoBlock(s, alt) {
   return `<img src="${s.image}" alt="${esc(alt)}" />`;
 }
 
+const HOME_BLURB = {
+  deliciosa: "Feuilles d’abord entières, puis découpées sur les bords, puis percées. Celle qu’on voit partout.",
+  obliqua: "Elle existe. Le « Obliqua » pas cher du magasin, non : c’est presque toujours une adansonii.",
+  adansonii: "Trous au milieu seulement. C’est elle l’espèce type — pas deliciosa.",
+};
+
 function renderHome() {
   const featured = ["deliciosa", "obliqua", "adansonii"]
     .map((id) => species.find((s) => s.id === id))
@@ -144,7 +150,7 @@ function renderHome() {
             </div>
             <div class="card-body">
               <h3>${esc(s.name)}</h3>
-              <p>${esc(s.summary)}</p>
+              <p>${esc(HOME_BLURB[s.id] || s.summary)}</p>
             </div>
           </article>`,
           )
