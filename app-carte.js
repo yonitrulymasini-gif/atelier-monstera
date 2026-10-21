@@ -326,8 +326,8 @@ function siteRoot() {
     return resolved.endsWith("/") ? resolved : resolved + "/";
   }
   let path = location.pathname
-    .replace(/\/(?:now|go|voir|a|b)\/(?:index\.html)?$/, "/")
-    .replace(/\/(?:now|go|voir|a|b)\/?$/, "/")
+    .replace(/\/(?:now|go|voir|a|b|c)\/(?:index\.html)?$/, "/")
+    .replace(/\/(?:now|go|voir|a|b|c)\/?$/, "/")
     .replace(/\/index\.html$/, "/");
   if (!path.endsWith("/")) path += "/";
   return location.origin + path;
