@@ -62,7 +62,7 @@ window.MONSTERA = {
     },
   ],
   care: {
-    lead: "Les mêmes gestes valent pour deliciosa, adansonii et l’obliqua de magasin. Lumière d’abord, puis l’eau et un terreau qui respire.",
+    lead: "Les mêmes gestes valent pour deliciosa, adansonii et l’obliqua de magasin. Lumière d’abord, puis l’eau. Le terreau, c’est la maison des racines ; l’engrais, c’est le repas — ce n’est pas la même chose.",
     steps: [
       {
         title: "Lumière",
@@ -85,6 +85,7 @@ window.MONSTERA = {
       {
         title: "Terreau",
         points: [
+          "Le terreau, c’est le mélange dans le pot : les racines s’y tiennent, y trouvent de l’air et de l’eau. Ce n’est pas de l’engrais.",
           "Recette simple : 1/3 terreau plantes vertes, 1/3 écorce de pin (ou copeaux de coco), 1/3 perlite — donc environ 30 % de perlite, pas 10 %.",
           "10 % de perlite, c’est ce qu’il y a souvent dans un sac tout prêt : ça aide un peu, mais le pot reste trop compact et trop longtemps mouillé.",
           "Les racines d’une Monstera veulent de l’air autant que de l’eau : terre qui respire, jamais de la terre de jardin.",
@@ -108,6 +109,7 @@ window.MONSTERA = {
       {
         title: "Engrais",
         points: [
+          "L’engrais, c’est la nourriture (azote, phosphore, potassium…). On l’ajoute dans l’eau d’arrosage. Ça ne remplace pas le terreau, et le terreau n’en contient presque plus au bout de quelques mois.",
           "Prends un engrais liquide « plantes vertes » (NPK équilibré, du type 7-4-6, 10-10-10 ou 6-4-6). Les chiffres exacts importent moins que la dilution.",
           "Printemps–été : une fois toutes les 2 semaines, à moitié de la dose écrite sur le flacon, sur un terreau déjà humide.",
           "Albo, Aurea, Thai : encore plus léger (¼ de dose). Le blanc et le jaune nourrissent peu, trop d’engrais brûle.",
