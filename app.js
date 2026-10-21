@@ -17,7 +17,7 @@ const state = {
   quizDone: false,
   round: [],
   history: [],
-  mapView: null,
+  leafletMap: null,
 };
 
 const root = document.getElementById("root");
@@ -113,189 +113,72 @@ function rangeIsos(open) {
   for (const bit of placeBits(open)) {
     for (const iso of PLACE_ISO[bit] || []) codes.add(iso);
   }
-  return ISO_ORDER.filter((iso) => codes.has(iso) && window.WORLD_PATHS && window.WORLD_PATHS[iso]);
-}
-
-const MAP_W = 1000;
-const MAP_H = 500;
-const MAP_FULL = { x: 0, y: 0, w: MAP_W, h: MAP_H };
-
-function pathBox(d) {
-  const nums = d.match(/-?\d+\.?\d*/g);
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-  if (!nums) return { minX: 0, minY: 0, maxX: MAP_W, maxY: MAP_H };
-  for (let i = 0; i < nums.length - 1; i += 2) {
-    const x = Number(nums[i]);
-    const y = Number(nums[i + 1]);
-    if (x < minX) minX = x;
-    if (y < minY) minY = y;
-    if (x > maxX) maxX = x;
-    if (y > maxY) maxY = y;
-  }
-  return { minX, minY, maxX, maxY };
-}
-
-function fitMapView(open) {
-  const native = rangeIsos(open);
-  const paths = window.WORLD_PATHS;
-  if (!paths || !native.length) return { ...MAP_FULL };
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-  for (const iso of native) {
-    const box = pathBox(paths[iso]);
-    if (box.minX < minX) minX = box.minX;
-    if (box.minY < minY) minY = box.minY;
-    if (box.maxX > maxX) maxX = box.maxX;
-    if (box.maxY > maxY) maxY = box.maxY;
-  }
-  let w = Math.max(48, maxX - minX);
-  let h = Math.max(48, maxY - minY);
-  const pad = Math.max(28, Math.max(w, h) * 0.2);
-  minX -= pad;
-  minY -= pad;
-  w += pad * 2;
-  h += pad * 2;
-  const aspect = MAP_W / MAP_H;
-  if (w / h > aspect) {
-    const nh = w / aspect;
-    minY -= (nh - h) / 2;
-    h = nh;
-  } else {
-    const nw = h * aspect;
-    minX -= (nw - w) / 2;
-    w = nw;
-  }
-  return { x: minX, y: minY, w, h };
-}
-
-function setMapViewBox(svg, view) {
-  state.mapView = view;
-  if (svg) {
-    svg.setAttribute(
-      "viewBox",
-      `${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}`,
-    );
-  }
-}
-
-function zoomMapByFactor(svg, factor, clientX, clientY) {
-  const cur = state.mapView || MAP_FULL;
-  let w = cur.w * factor;
-  let h = cur.h * factor;
-  if (factor > 1 && w >= MAP_W * 0.97) {
-    setMapViewBox(svg, { ...MAP_FULL });
-    return;
-  }
-  w = Math.max(28, Math.min(MAP_W, w));
-  h = w / (MAP_W / MAP_H);
-  const rect = svg ? svg.getBoundingClientRect() : { left: 0, top: 0, width: 1, height: 1 };
-  const px = (clientX - rect.left) / Math.max(1, rect.width);
-  const py = (clientY - rect.top) / Math.max(1, rect.height);
-  setMapViewBox(svg, {
-    x: cur.x + px * cur.w - px * w,
-    y: cur.y + py * cur.h - py * h,
-    w,
-    h,
-  });
-}
-
-function zoomMapAt(svg, dir, clientX, clientY) {
-  zoomMapByFactor(svg, dir === "in" ? 0.78 : 1 / 0.78, clientX, clientY);
+  return ISO_ORDER.filter((iso) => codes.has(iso));
 }
 
 function zoomMap(dir) {
-  const svg = document.querySelector(".range-map svg");
-  if (!svg) {
-    const cur = state.mapView || MAP_FULL;
-    const cx = cur.x + cur.w / 2;
-    const cy = cur.y + cur.h / 2;
-    zoomMapAt(null, dir, cx, cy);
-    return;
-  }
-  const rect = svg.getBoundingClientRect();
-  zoomMapAt(svg, dir, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  const map = state.leafletMap;
+  if (!map) return;
+  if (dir === "in") map.zoomIn();
+  else map.zoomOut();
 }
 
 function bindMapInteract() {
-  const svg = document.querySelector(".range-map svg");
-  if (!svg || !state.open) return;
-  if (!state.mapView) state.mapView = fitMapView(state.open);
+  const el = document.getElementById("range-leaflet");
+  if (!el || !state.open || !window.L) return;
+  const native = new Set(rangeIsos(state.open));
+  if (!native.size) return;
 
-  const pts = new Map();
-  let lastPan = null;
-  let lastPinch = 0;
+  if (state.leafletMap) {
+    state.leafletMap.remove();
+    state.leafletMap = null;
+  }
 
-  const gap = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-
-  svg.addEventListener("pointerdown", (e) => {
-    svg.setPointerCapture(e.pointerId);
-    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    svg.classList.add("is-dragging");
-    if (pts.size === 1) lastPan = { x: e.clientX, y: e.clientY };
-    if (pts.size === 2) {
-      const [a, b] = [...pts.values()];
-      lastPinch = gap(a, b);
-      lastPan = null;
-    }
+  const map = L.map(el, {
+    zoomControl: false,
+    scrollWheelZoom: true,
+    attributionControl: true,
   });
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: "Tuiles © Esri",
+  }).addTo(map);
+  map.setView([17, -93], 4);
+  state.leafletMap = map;
 
-  svg.addEventListener("pointermove", (e) => {
-    if (!pts.has(e.pointerId)) return;
-    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    const view = state.mapView;
-    const rect = svg.getBoundingClientRect();
-    if (pts.size === 2) {
-      const [a, b] = [...pts.values()];
-      const d = gap(a, b);
-      if (lastPinch) {
-        zoomMapByFactor(svg, lastPinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2);
-      }
-      lastPinch = d;
-      return;
-    }
-    if (!lastPan) return;
-    const dx = ((e.clientX - lastPan.x) * view.w) / Math.max(1, rect.width);
-    const dy = ((e.clientY - lastPan.y) * view.h) / Math.max(1, rect.height);
-    lastPan = { x: e.clientX, y: e.clientY };
-    setMapViewBox(svg, { ...view, x: view.x - dx, y: view.y - dy });
-  });
-
-  const endPtr = (e) => {
-    pts.delete(e.pointerId);
-    if (pts.size === 1) lastPan = [...pts.values()][0];
-    if (pts.size < 2) lastPinch = 0;
-    if (!pts.size) {
-      lastPan = null;
-      svg.classList.remove("is-dragging");
-    }
-  };
-  svg.addEventListener("pointerup", endPtr);
-  svg.addEventListener("pointercancel", endPtr);
-  svg.addEventListener(
-    "wheel",
-    (e) => {
-      e.preventDefault();
-      zoomMapAt(svg, e.deltaY < 0 ? "in" : "out", e.clientX, e.clientY);
-    },
-    { passive: false },
-  );
+  fetch(assetUrl("map-geo.json"))
+    .then((r) => r.json())
+    .then((geo) => {
+      if (!state.leafletMap || state.leafletMap !== map) return;
+      const layer = L.geoJSON(geo, {
+        filter: (feat) => native.has(feat.properties.ISO),
+        style: {
+          color: "#0f5c38",
+          weight: 1.2,
+          fillColor: "#0f5c38",
+          fillOpacity: 0.45,
+        },
+      }).addTo(map);
+      const fit = () => {
+        map.invalidateSize();
+        if (layer.getLayers().length) {
+          map.fitBounds(layer.getBounds().pad(0.28));
+        } else {
+          map.setView([4, -75], 3);
+        }
+      };
+      fit();
+      requestAnimationFrame(fit);
+    })
+    .catch(() => {
+      map.setView([4, -75], 3);
+    });
 }
 
 function rangeMapHtml(open) {
   const native = rangeIsos(open);
-  const paths = window.WORLD_PATHS;
-  if (!paths || !native.length) return "";
+  if (!native.length) return "";
   const names = native.map((iso) => ISO_FR[iso]);
-  if (!state.mapView) state.mapView = fitMapView(open);
-  const view = state.mapView;
-  const land = Object.entries(paths)
-    .map(([iso, d]) => `<path class="${native.includes(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
-    .join("");
   return `
     <section class="section tight range">
       <h2 class="mid">Pays d’origine</h2>
@@ -304,10 +187,7 @@ function rangeMapHtml(open) {
           <button type="button" data-map-zoom="in" aria-label="Zoomer">+</button>
           <button type="button" data-map-zoom="out" aria-label="Dézoomer">−</button>
         </div>
-        <svg viewBox="${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}" role="img" aria-label="${esc(names.join(", "))}">
-          <rect class="sea" x="-80" y="-80" width="1160" height="660" />
-          ${land}
-        </svg>
+        <div id="range-leaflet" class="range-leaflet" role="img" aria-label="${esc(names.join(", "))}"></div>
         <figcaption><span class="swatch"></span> ${esc(names.join(" · "))}</figcaption>
       </figure>
     </section>
@@ -388,7 +268,6 @@ function goBack() {
   if (state.page === "fiche" && !state.open) {
     state.page = "especes";
   }
-  state.mapView = state.page === "fiche" && state.open ? fitMapView(state.open) : null;
   state.query = prev.query || "";
   render();
   window.scrollTo(0, prev.scroll || 0);
@@ -764,6 +643,10 @@ function pageHtml() {
 }
 
 function render() {
+  if (state.leafletMap) {
+    state.leafletMap.remove();
+    state.leafletMap = null;
+  }
   root.innerHTML = `
     <div class="app">
       <header class="top">
@@ -825,7 +708,6 @@ root.addEventListener("click", (e) => {
     state.history = [];
     state.page = go.dataset.go;
     state.open = null;
-    state.mapView = null;
     window.scrollTo(0, 0);
     render();
     return;
@@ -836,7 +718,6 @@ root.addEventListener("click", (e) => {
     state.history.push(snapshot());
     state.open = species.find((s) => s.id === openBtn.dataset.open) || null;
     state.page = "fiche";
-    state.mapView = state.open ? fitMapView(state.open) : null;
     window.scrollTo(0, 0);
     render();
     return;

@@ -25,11 +25,16 @@
         css.href = root + "styles.css?t=" + t;
         document.head.appendChild(css);
 
-        var files = ["catalog.js", "data.js", "map-data.js", "app.js"];
+        var leafletCss = document.createElement("link");
+        leafletCss.rel = "stylesheet";
+        leafletCss.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(leafletCss);
+
+        var files = ["catalog.js", "data.js", "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js", "app.js"];
         function next(i) {
           if (i >= files.length) return;
           var s = document.createElement("script");
-          s.src = root + files[i] + "?t=" + t;
+          s.src = files[i].indexOf("http") === 0 ? files[i] : root + files[i] + "?t=" + t;
           s.onerror = function () {
             next(i + 1);
           };
