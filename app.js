@@ -134,13 +134,22 @@ function bindMapInteract() {
     state.leafletMap = null;
   }
 
+  const world = L.latLngBounds([-85, -180], [85, 180]);
   const map = L.map(el, {
     zoomControl: false,
     scrollWheelZoom: true,
     attributionControl: true,
+    worldCopyJump: false,
+    minZoom: 3,
+    maxZoom: 12,
+    maxBounds: world,
+    maxBoundsViscosity: 1,
   });
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 13,
+    minZoom: 3,
+    maxZoom: 12,
+    noWrap: true,
+    bounds: world,
     attribution: "Tuiles © Esri",
   }).addTo(map);
   map.setView([17, -93], 4);
@@ -277,8 +286,16 @@ function goBack() {
 }
 
 function siteRoot() {
-  let path = location.pathname.replace(/\/now\/(?:index\.html)?$/, "/").replace(/\/now\/?$/, "/");
-  path = path.replace(/\/index\.html$/, "/");
+  const base = document.querySelector("base");
+  const href = base && base.getAttribute("href");
+  if (href) {
+    const resolved = new URL(href, location.href).href;
+    return resolved.endsWith("/") ? resolved : resolved + "/";
+  }
+  let path = location.pathname
+    .replace(/\/(?:now|go)\/(?:index\.html)?$/, "/")
+    .replace(/\/(?:now|go)\/?$/, "/")
+    .replace(/\/index\.html$/, "/");
   if (!path.endsWith("/")) path += "/";
   return location.origin + path;
 }
