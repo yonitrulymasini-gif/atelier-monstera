@@ -821,6 +821,18 @@ footer {
   flex-shrink: 0;
 }
 
+.range-map .country-name {
+  fill: var(--white);
+  font-family: Outfit, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 550;
+  text-anchor: middle;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: var(--green);
+  stroke-width: 3px;
+}
+
 @media (max-width: 980px) {
   :root {
     --header-space: 8.4rem;

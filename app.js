@@ -76,30 +76,84 @@ const PLACE_ISO = {
   "amerique centrale": ["MX", "GT", "BZ", "SV", "HN", "NI", "CR", "PA"],
 };
 
+const ISO_FR = {
+  MX: "Mexique",
+  GT: "Guatemala",
+  BZ: "Belize",
+  SV: "Salvador",
+  HN: "Honduras",
+  NI: "Nicaragua",
+  CR: "Costa Rica",
+  PA: "Panama",
+  CU: "Cuba",
+  HT: "Haïti",
+  DO: "Rép. dominicaine",
+  JM: "Jamaïque",
+  TT: "Trinité",
+  CO: "Colombie",
+  VE: "Venezuela",
+  GY: "Guyana",
+  SR: "Suriname",
+  GF: "Guyane",
+  EC: "Équateur",
+  PE: "Pérou",
+  BR: "Brésil",
+  BO: "Bolivie",
+  PY: "Paraguay",
+  CL: "Chili",
+  AR: "Argentine",
+  UY: "Uruguay",
+};
+
+const ISO_ORDER = Object.keys(ISO_FR);
+
 function rangeIsos(open) {
   const codes = new Set();
   for (const bit of placeBits(open)) {
     for (const iso of PLACE_ISO[bit] || []) codes.add(iso);
   }
-  return [...codes].filter((iso) => window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
+  return ISO_ORDER.filter((iso) => codes.has(iso) && window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
+}
+
+function pathCentroid(d) {
+  const ring = (d.split("Z")[0] || d).replace(/[ML]/gi, " ");
+  const nums = ring.match(/-?\d+\.?\d*/g);
+  if (!nums || nums.length < 4) return [380, 310];
+  let sx = 0;
+  let sy = 0;
+  let n = 0;
+  for (let i = 0; i < nums.length - 1; i += 2) {
+    sx += Number(nums[i]);
+    sy += Number(nums[i + 1]);
+    n += 1;
+  }
+  return [sx / n, sy / n];
 }
 
 function rangeMapHtml(open) {
-  const native = new Set(rangeIsos(open));
+  const native = rangeIsos(open);
   const paths = window.AMERICAS_PATHS;
-  if (!paths || !native.size) return "";
+  if (!paths || !native.length) return "";
+  const names = native.map((iso) => ISO_FR[iso]);
   const land = Object.entries(paths)
-    .map(([iso, d]) => `<path class="${native.has(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
+    .map(([iso, d]) => `<path class="${native.includes(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
+    .join("");
+  const labels = native
+    .map((iso) => {
+      const [x, y] = pathCentroid(paths[iso]);
+      return `<text class="country-name" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${esc(ISO_FR[iso])}</text>`;
+    })
     .join("");
   return `
     <section class="section tight range">
       <h2 class="mid">Pays d’origine</h2>
       <figure class="range-map">
-        <svg viewBox="0 0 760 620" role="img" aria-label="Carte des pays d’origine">
+        <svg viewBox="0 0 760 620" role="img" aria-label="${esc(names.join(", "))}">
           <rect class="sea" width="760" height="620" />
           ${land}
+          ${labels}
         </svg>
-        <figcaption><span class="swatch"></span> Pays où elle pousse en forêt</figcaption>
+        <figcaption><span class="swatch"></span> ${esc(names.join(" · "))}</figcaption>
       </figure>
     </section>
   `;
