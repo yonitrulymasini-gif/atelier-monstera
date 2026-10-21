@@ -785,8 +785,8 @@ footer {
 .range-leaflet {
   display: block;
   width: 100%;
-  height: 380px;
-  background: #d8e4d8;
+  height: 460px;
+  background: #d5ddd6;
 }
 
 .range-leaflet.leaflet-container {

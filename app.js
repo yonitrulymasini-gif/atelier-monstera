@@ -139,8 +139,8 @@ function bindMapInteract() {
     scrollWheelZoom: true,
     attributionControl: true,
   });
-  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 13,
     attribution: "Tuiles © Esri",
   }).addTo(map);
   map.setView([17, -93], 4);
@@ -153,16 +153,19 @@ function bindMapInteract() {
       const layer = L.geoJSON(geo, {
         filter: (feat) => native.has(feat.properties.ISO),
         style: {
-          color: "#0f5c38",
-          weight: 1.2,
+          color: "#083d26",
+          weight: 1,
           fillColor: "#0f5c38",
-          fillOpacity: 0.45,
+          fillOpacity: 0.72,
+          lineJoin: "round",
+          lineCap: "round",
+          smoothFactor: 1.2,
         },
       }).addTo(map);
       const fit = () => {
         map.invalidateSize();
         if (layer.getLayers().length) {
-          map.fitBounds(layer.getBounds().pad(0.28));
+          map.fitBounds(layer.getBounds().pad(0.12));
         } else {
           map.setView([4, -75], 3);
         }
