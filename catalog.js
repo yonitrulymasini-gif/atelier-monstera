@@ -242,9 +242,9 @@ window.MONSTERA_CATALOG = [
     image: wiki("Monstera dubia (Kunth) Engl. & K.Krause - par Mickael Schauli.jpg"),
     credit: "Wikimedia Commons / Mickaël Schauli",
     summary:
-      "Deux plantes en une. Petite, elle plaque des feuilles argentées. Grande, elle change complètement de tête.",
+      "Deux plantes en une. Petite, elle plaque des feuilles souvent argentées. Grande, elle change complètement de tête.",
     description:
-      "Acceptée. Fort dimorphisme. Sans tuteur elle reste souvent juvénile. L’argenté qui part en hauteur n’est pas une maladie : c’est l’âge adulte.",
+      "Acceptée. Fort dimorphisme. L’argenté du jeune est normal (Kew le décrit), pas un cultivar. Sans tuteur elle reste souvent juvénile. Plus haut, l’argenté part et la feuille change.",
     traits: ["Espèce acceptée", "Dimorphisme", "Shingling"],
   }),
   wild({
@@ -1109,21 +1109,6 @@ window.MONSTERA_CATALOG = [
     description:
       "Décrite comme variété de deliciosa. Kew n’en fait plus une entité séparée. En collection, le nom désigne des plantes aux lobes étroits. Ce n’est pas Burle Marx’s Flame, même si les deux sont très découpées.",
     traits: ["Nom de collection", "deliciosa selon Kew"],
-  }),
-  wild({
-    id: "dubia-var",
-    name: "Monstera dubia panachée",
-    common: ["Dubia Variegata"],
-    origin: "Sélection horticole de dubia",
-    size: "Jeune collée au tronc ; ensuite environ 1,5–3 m",
-    kind: "cultivar",
-    difficulty: "Avancé",
-    image: "",
-    credit: "Pas de photo libre distincte d’une dubia panachée.",
-    summary: "Même plante que dubia (jeune collée au tronc), avec des secteurs crème.",
-    description:
-      "Jeune, elle plaque encore ses feuilles au support. La panachure est une mutation, pas une espèce. Adulte, la feuille change comme chez dubia verte.",
-    traits: ["Cultivar", "dubia"],
   }),
   wild({
     id: "lechleriana-albo",
