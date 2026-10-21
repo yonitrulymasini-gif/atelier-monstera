@@ -293,8 +293,8 @@ function siteRoot() {
     return resolved.endsWith("/") ? resolved : resolved + "/";
   }
   let path = location.pathname
-    .replace(/\/(?:now|go)\/(?:index\.html)?$/, "/")
-    .replace(/\/(?:now|go)\/?$/, "/")
+    .replace(/\/(?:now|go|voir|a)\/(?:index\.html)?$/, "/")
+    .replace(/\/(?:now|go|voir|a)\/?$/, "/")
     .replace(/\/index\.html$/, "/");
   if (!path.endsWith("/")) path += "/";
   return location.origin + path;
@@ -371,7 +371,7 @@ function renderSpecies() {
     <section class="section">
       <header class="section-head">
         <p class="eyebrow">Encyclopédie</p>
-        <h1>${nSp} espèces, plus les mutations</h1>
+        <h1>${nSp} espèces et ${nCv} cultivars</h1>
         <p class="lede">
           Toutes les espèces sauvages reconnues par Kew, du Mexique à l’Amazonie.
           Ensuite, quelques formes de culture bien connues (Albo, Thai Constellation, Aurea, Esqueleto)
