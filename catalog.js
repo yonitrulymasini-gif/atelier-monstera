@@ -1,13 +1,13 @@
 function wiki(file) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=2000`;
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=900`;
 }
 
 function inat(id, ext) {
-  return `https://inaturalist-open-data.s3.amazonaws.com/photos/${id}/original.${ext || "jpg"}`;
+  return `https://inaturalist-open-data.s3.amazonaws.com/photos/${id}/large.${ext || "jpg"}`;
 }
 
 function inatAll(id, ext) {
-  return `https://static.inaturalist.org/photos/${id}/original.${ext || "jpg"}`;
+  return `https://static.inaturalist.org/photos/${id}/large.${ext || "jpg"}`;
 }
 
 function wild(item) {
@@ -47,7 +47,7 @@ window.MONSTERA_CATALOG = [
     difficulty: "Facile",
     light: "Lumière vive indirecte (pas le plein soleil)",
     water: "Quand le haut du terreau a un peu séché",
-    image: wiki("Monstera deliciosa (Monaco).jpg"),
+    image: "photos/home-deliciosa.webp",
     credit: "Wikimedia Commons",
     summary: "Grandes feuilles vertes, d’abord entières, puis découpées et trouées.",
     description:
@@ -63,7 +63,7 @@ window.MONSTERA_CATALOG = [
     difficulty: "Facile",
     light: "Lumière moyenne à vive, sans soleil brûlant",
     water: "Légèrement humide, jamais d’eau stagnante",
-    image: wiki("Monstera adansonii - Mickaël Schauli - 1.jpg"),
+    image: "photos/home-adansonii.webp",
     credit: "Wikimedia Commons / Mickaël Schauli",
     summary: "Feuilles plus petites, trouées au milieu, sans grandes fentes.",
     description:
@@ -129,7 +129,7 @@ window.MONSTERA_CATALOG = [
     origin: "Costa Rica → Amérique du Sud tropicale et Trinité (Kew)",
     size: "Environ 1–1,5 m chez toi ; feuilles souvent 10–25 cm",
     difficulty: "Facile pour le plant de magasin",
-    image: wiki('Monstera Obliqua "Peru" - Mickaël Schauli - 2.jpg'),
+    image: "photos/home-obliqua.webp",
     credit: "Wikimedia Commons / Mickaël Schauli",
     summary: "Feuilles très percées, presque ajourées, plus délicates.",
     description:
@@ -540,7 +540,7 @@ window.MONSTERA_CATALOG = [
     id: "alfaroi",
     name: "Monstera alfaroi",
     common: ["alfaroi"],
-    image: "https://static.inaturalist.org/photos/169485168/original.jpg",
+    image: "https://static.inaturalist.org/photos/169485168/large.jpg",
     credit: "iNaturalist / LostInCR",
     origin: "Costa Rica (Croat & Cedeño, 2020)",
     summary: "Décrite en 2020. Costa Rica.",
@@ -626,7 +626,7 @@ window.MONSTERA_CATALOG = [
     id: "alcirana",
     name: "Monstera alcirana",
     common: ["alcirana"],
-    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/180812156/original.jpg",
+    image: "https://inaturalist-open-data.s3.amazonaws.com/photos/180812156/large.jpg",
     credit: "iNaturalist / Carlos Sanchez",
     origin: "Panama (Croat, Cedeño, Zuluaga & Ortiz, 2020)",
     summary: "Décrite en 2020 au Panama.",

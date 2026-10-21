@@ -2,47 +2,109 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Atelier Monstera — tout apprendre sur les Monsteras : espèces, photos, noms, entretien et quiz." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@380;450;550;650&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#0f5c38" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
     <title>Atelier Monstera — apprendre la plante</title>
+    <link rel="preload" as="image" href="photos/hero-deliciosa.webp" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="font" href="fonts/outfit-latin.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="font" href="fonts/fraunces-latin.woff2" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      try {
+        if (localStorage.getItem("atelier-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script>
-      (function () {
-        var t = Date.now();
-        var css = document.createElement("link");
-        css.rel = "stylesheet";
-        css.href = "styles.css?t=" + t;
-        document.head.appendChild(css);
-
-        var leafletCss = document.createElement("link");
-        leafletCss.rel = "stylesheet";
-        leafletCss.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
-        document.head.appendChild(leafletCss);
-
-        var files = ["catalog.js", "data.js", "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js", "app.js"];
-        function next(i) {
-          if (i >= files.length) return;
-          var s = document.createElement("script");
-          s.src = files[i].indexOf("http") === 0 ? files[i] : files[i] + "?t=" + t;
-          s.onerror = function () {
-            next(i + 1);
-          };
-          s.onload = function () {
-            next(i + 1);
-          };
-          document.body.appendChild(s);
-        }
-        next(0);
-      })();
-    </script>
+    <div id="root">
+      <div class="app" id="static-home">
+        <header class="top">
+          <div class="top-row">
+            <span class="top-slot" aria-hidden="true"></span>
+            <button class="brand" data-go="accueil"><span class="logo" aria-hidden="true">◈</span> Atelier Monstera</button>
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Passer en mode sombre">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>
+            </button>
+          </div>
+          <nav>
+            <div class="nav-side nav-left">
+              <button class="active" data-go="accueil">Accueil</button>
+              <button data-go="especes">Espèces</button>
+            </div>
+            <button data-go="quiz">Quiz</button>
+            <div class="nav-side nav-right">
+              <button data-go="entretien">Entretien</button>
+              <button data-go="anatomie">Anatomie</button>
+            </div>
+          </nav>
+        </header>
+        <main>
+          <section class="hero">
+            <div>
+              <p class="eyebrow">Genre Monstera · famille Araceae</p>
+              <h1>Tout connaitre sur les Monstera.</h1>
+              <p class="lede">
+                Noms savants et populaires, portraits, anatomie, culture et un quiz. Un atelier pour
+                reconnaître une deliciosa, une adansonii, une obliqua — et ce qui les distingue vraiment.
+              </p>
+              <div class="actions">
+                <button class="cta" data-go="especes">Explorer les espèces</button>
+                <button class="cta ghost" data-go="quiz">Tester mes connaissances</button>
+              </div>
+            </div>
+            <figure>
+              <img
+                id="lcp-hero"
+                src="photos/hero-deliciosa.webp"
+                width="420"
+                height="560"
+                fetchpriority="high"
+                decoding="async"
+                alt="Feuille de Monstera deliciosa"
+              />
+            </figure>
+          </section>
+          <section class="section tight">
+            <h2 class="mid">Les trois plantes de base</h2>
+            <div class="grid trio">
+              <article class="card" data-open="deliciosa">
+                <div class="card-media">
+                  <img src="photos/home-deliciosa.webp" width="640" height="480" decoding="async" alt="Monstera deliciosa" />
+                </div>
+                <div class="card-body">
+                  <h3>Monstera deliciosa</h3>
+                  <p>Grandes feuilles vertes, d’abord entières, puis découpées et trouées.</p>
+                </div>
+              </article>
+              <article class="card" data-open="obliqua">
+                <div class="card-media">
+                  <img src="photos/home-obliqua.webp" width="640" height="480" loading="lazy" decoding="async" alt="Monstera obliqua" />
+                </div>
+                <div class="card-body">
+                  <h3>Monstera obliqua</h3>
+                  <p>Feuilles très percées, presque ajourées, plus délicates.</p>
+                </div>
+              </article>
+              <article class="card" data-open="adansonii">
+                <div class="card-media">
+                  <img src="photos/home-adansonii.webp" width="640" height="480" loading="lazy" decoding="async" alt="Monstera adansonii" />
+                </div>
+                <div class="card-body">
+                  <h3>Monstera adansonii</h3>
+                  <p>Feuilles plus petites, trouées au milieu, sans grandes fentes.</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script defer src="catalog.js"></script>
+    <script defer src="data.js"></script>
+    <script defer src="app.js"></script>
   </body>
 </html>

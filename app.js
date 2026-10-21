@@ -41,6 +41,8 @@ function themeIcon(theme) {
 function applyTheme(theme) {
   state.theme = theme === "dark" ? "dark" : "light";
   document.documentElement.dataset.theme = state.theme;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", state.theme === "dark" ? "#121212" : "#0f5c38");
   try {
     localStorage.setItem("atelier-theme", state.theme);
   } catch {
@@ -156,11 +158,36 @@ function zoomMap(dir) {
   else map.zoomOut();
 }
 
+function loadLeaflet() {
+  if (window.L) return Promise.resolve();
+  if (window.__leafletWait) return window.__leafletWait;
+  window.__leafletWait = new Promise((resolve, reject) => {
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+    document.head.appendChild(css);
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";
+    s.onload = resolve;
+    s.onerror = reject;
+    document.body.appendChild(s);
+  });
+  return window.__leafletWait;
+}
+
 function bindMapInteract() {
   const el = document.getElementById("range-leaflet");
-  if (!el || !state.open || !window.L) return;
+  if (!el || !state.open) return;
   const native = new Set(rangeIsos(state.open));
   if (!native.size) return;
+
+  loadLeaflet()
+    .then(() => mountRangeMap(el, native))
+    .catch(() => {});
+}
+
+function mountRangeMap(el, native) {
+  if (!window.L || !el.isConnected) return;
 
   if (state.leafletMap) {
     state.leafletMap.remove();
@@ -329,12 +356,31 @@ function assetUrl(src) {
   return siteRoot() + src;
 }
 
-function photoBlock(s, alt) {
+function sizedSrc(src, w) {
+  if (!src) return src;
+  if (/Special:FilePath/i.test(src)) {
+    return src.replace(/([?&]width=)\d+/i, `$1${w}`);
+  }
+  if (/\/original\.(jpe?g|png|webp)$/i.test(src)) {
+    return src.replace("/original.", "/large.");
+  }
+  return src;
+}
+
+function photoBlock(s, alt, opts) {
+  opts = opts || {};
   if (!s.image) {
     return `<div class="no-photo"><span>Pas de photo de cette espèce</span></div>`;
   }
   const fit = s.imageFit === "contain" ? " contain" : "";
-  return `<img class="${fit.trim()}" src="${esc(assetUrl(s.image))}" alt="${esc(alt)}" />`;
+  const eager = !!opts.eager;
+  const w = eager ? 1100 : 720;
+  const src = sizedSrc(assetUrl(s.image), w);
+  const size = eager ? `width="1100" height="1400"` : `width="720" height="540"`;
+  const extra = eager
+    ? `fetchpriority="high" decoding="async"`
+    : `loading="lazy" decoding="async"`;
+  return `<img class="${fit.trim()}" src="${esc(src)}" alt="${esc(alt)}" ${size} ${extra} />`;
 }
 
 const HOME_BLURB = {
@@ -362,7 +408,7 @@ function renderHome() {
         </div>
       </div>
       <figure>
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Monstera%20deliciosa%20foliage.JPG?width=1400" alt="Feuille de Monstera deliciosa" />
+        <img id="lcp-hero" src="${esc(assetUrl("photos/hero-deliciosa.webp"))}" width="420" height="560" fetchpriority="high" decoding="async" alt="Feuille de Monstera deliciosa" />
       </figure>
     </section>
     <section class="section tight">
@@ -373,7 +419,7 @@ function renderHome() {
             (s) => `
           <article class="card" data-open="${s.id}">
             <div class="card-media">
-              ${photoBlock(s, s.name)}
+              ${photoBlock(s, s.name, { eager: s.id === "deliciosa" })}
             </div>
             <div class="card-body">
               <h3>${esc(s.name)}</h3>
@@ -452,7 +498,7 @@ function renderAnatomy() {
       </header>
       <div class="care-split">
         <figure class="portrait">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Starr_080731-9572_Monstera_deliciosa.jpg?width=1400" alt="Feuille découpée de Monstera deliciosa" />
+          <img src="${esc(assetUrl("photos/anatomy-leaf.webp"))}" width="640" height="480" loading="lazy" decoding="async" alt="Feuille découpée de Monstera deliciosa" />
         </figure>
         <div class="care-list">${steps}</div>
       </div>
@@ -482,7 +528,7 @@ function renderCare() {
       </header>
       <div class="care-split">
         <figure class="portrait">
-          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Monstera%20deliciosa%20(Monaco).jpg?width=1400" alt="Monstera deliciosa en culture" />
+          <img src="${esc(assetUrl("photos/home-deliciosa.webp"))}" width="640" height="480" loading="lazy" decoding="async" alt="Monstera deliciosa en culture" />
         </figure>
         <div class="care-list">${steps}</div>
       </div>
@@ -631,7 +677,7 @@ function renderFiche() {
   return `
     <article class="fiche">
       <div class="fiche-hero">
-        ${photoBlock(open, open.name)}
+        ${photoBlock(open, open.name, { eager: true })}
       </div>
       <div class="fiche-body">
         <button class="back" id="go-back">← Retour</button>
@@ -690,6 +736,11 @@ function render() {
   if (state.leafletMap) {
     state.leafletMap.remove();
     state.leafletMap = null;
+  }
+  const staticHome = document.getElementById("static-home");
+  if (staticHome && state.page === "accueil" && !state.open) {
+    applyTheme(readTheme());
+    return;
   }
   root.innerHTML = `
     <div class="app">
