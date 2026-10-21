@@ -93,13 +93,13 @@ function rangeMapHtml(open) {
     .join("");
   return `
     <section class="section tight range">
-      <h2 class="mid">Aire</h2>
+      <h2 class="mid">Pays d’origine</h2>
       <figure class="range-map">
-        <svg viewBox="0 0 760 620" role="img" aria-label="Carte de l’aire naturelle">
+        <svg viewBox="0 0 760 620" role="img" aria-label="Carte des pays d’origine">
           <rect class="sea" width="760" height="620" />
           ${land}
         </svg>
-        <figcaption><span class="swatch"></span> Pays d’origine</figcaption>
+        <figcaption><span class="swatch"></span> Pays où elle pousse en forêt</figcaption>
       </figure>
     </section>
   `;
