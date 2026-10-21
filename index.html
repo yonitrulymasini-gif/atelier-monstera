@@ -20,7 +20,7 @@
         var t = Date.now();
         var css = document.createElement("link");
         css.rel = "stylesheet";
-        css.href = "styles-theme.css?t=" + t;
+        css.href = "styles.css?t=" + t;
         document.head.appendChild(css);
 
         var leafletCss = document.createElement("link");
@@ -28,7 +28,7 @@
         leafletCss.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
         document.head.appendChild(leafletCss);
 
-        var files = ["catalog4.js", "data.js", "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js", "app-theme.js"];
+        var files = ["catalog.js", "data.js", "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js", "app.js"];
         function next(i) {
           if (i >= files.length) return;
           var s = document.createElement("script");

@@ -319,16 +319,7 @@ function goBack() {
 }
 
 function siteRoot() {
-  const base = document.querySelector("base");
-  const href = base && base.getAttribute("href");
-  if (href) {
-    const resolved = new URL(href, location.href).href;
-    return resolved.endsWith("/") ? resolved : resolved + "/";
-  }
-  let path = location.pathname
-    .replace(/\/(?:now|go|voir|a|b|c|d)\/(?:index\.html)?$/, "/")
-    .replace(/\/(?:now|go|voir|a|b|c|d)\/?$/, "/")
-    .replace(/\/index\.html$/, "/");
+  let path = location.pathname.replace(/\/index\.html$/, "/");
   if (!path.endsWith("/")) path += "/";
   return location.origin + path;
 }
