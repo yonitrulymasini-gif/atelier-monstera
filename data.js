@@ -122,8 +122,8 @@ window.MONSTERA = {
     warning: {
       title: "Toxicité",
       points: [
-        "Oxalate de calcium : irrite si on mâche (humains, chiens, chats).",
-        "Fruit de deliciosa : seulement à pleine maturité.",
+        "Les feuilles et les tiges irritent la bouche si on les mâche — toi aussi, pas seulement le chien ou le chat. Ce n’est en général pas un poison mortel, mais ça pique, ça brûle, ça peut gonfler.",
+        "Fruit de deliciosa : seulement à pleine maturité. Encore vert, il irrite comme la feuille.",
       ],
     },
   },
