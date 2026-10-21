@@ -408,7 +408,7 @@ function renderHome() {
         </div>
       </div>
       <figure>
-        <img id="lcp-hero" src="${esc(assetUrl("photos/hero-deliciosa.webp"))}" width="720" height="960" fetchpriority="high" decoding="async" alt="Feuille de Monstera deliciosa" />
+        <img id="lcp-hero" src="${esc(assetUrl("photos/hero-mur.webp"))}" width="720" height="960" fetchpriority="high" decoding="async" alt="Feuille de Monstera deliciosa" style="width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center;border-radius:28px;display:block" />
       </figure>
     </section>
     <section class="section tight">
