@@ -16,6 +16,7 @@ const state = {
   quizIndex: 0,
   quizDone: false,
   round: [],
+  history: [],
 };
 
 const root = document.getElementById("root");
@@ -103,11 +104,40 @@ function kindLabel(kind) {
   return "Espèce";
 }
 
+function snapshot() {
+  return {
+    page: state.page,
+    openId: state.open ? state.open.id : null,
+    query: state.query,
+    scroll: window.scrollY,
+  };
+}
+
+function goBack() {
+  const prev = state.history.pop();
+  if (!prev) {
+    state.open = null;
+    state.page = "especes";
+    window.scrollTo(0, 0);
+    render();
+    return;
+  }
+  state.page = prev.page;
+  state.open = prev.openId ? species.find((s) => s.id === prev.openId) || null : null;
+  if (state.page === "fiche" && !state.open) {
+    state.page = "especes";
+  }
+  state.query = prev.query || "";
+  render();
+  window.scrollTo(0, prev.scroll || 0);
+}
+
 function photoBlock(s, alt) {
   if (!s.image) {
     return `<div class="no-photo"><span>Pas de photo de cette espèce</span></div>`;
   }
-  return `<img src="${s.image}" alt="${esc(alt)}" />`;
+  const fit = s.imageFit === "contain" ? " contain" : "";
+  return `<img class="${fit.trim()}" src="${s.image}" alt="${esc(alt)}" />`;
 }
 
 const HOME_BLURB = {
@@ -408,7 +438,7 @@ function renderFiche() {
         ${photoBlock(open, open.name)}
       </div>
       <div class="fiche-body">
-        <button class="back" id="close-modal">← Toutes les espèces</button>
+        <button class="back" id="go-back">← Retour</button>
         <p class="eyebrow">${esc(open.family)}</p>
         <h1>${esc(open.name)}</h1>
         <p class="aka">${esc(open.common.join(" · "))}</p>
@@ -503,8 +533,14 @@ function render() {
 }
 
 root.addEventListener("click", (e) => {
+  if (e.target.closest("#go-back")) {
+    goBack();
+    return;
+  }
+
   const go = e.target.closest("[data-go]");
   if (go) {
+    state.history = [];
     state.page = go.dataset.go;
     state.open = null;
     window.scrollTo(0, 0);
@@ -514,6 +550,7 @@ root.addEventListener("click", (e) => {
 
   const openBtn = e.target.closest("[data-open]");
   if (openBtn) {
+    state.history.push(snapshot());
     state.open = species.find((s) => s.id === openBtn.dataset.open) || null;
     state.page = "fiche";
     window.scrollTo(0, 0);
@@ -550,19 +587,11 @@ root.addEventListener("click", (e) => {
     return;
   }
 
-  if (e.target.id === "close-modal") {
-    state.open = null;
-    state.page = "especes";
-    window.scrollTo(0, 0);
-    render();
-  }
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && state.open) {
-    state.open = null;
-    state.page = "especes";
-    render();
+  if (e.key === "Escape" && (state.open || state.history.length)) {
+    goBack();
   }
 });
 
