@@ -776,6 +776,7 @@ footer {
 }
 
 .range-map {
+  position: relative;
   margin: 0;
   border: 1px solid var(--black);
   overflow: hidden;
@@ -788,6 +789,33 @@ footer {
   max-height: 420px;
 }
 
+.map-zoom {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 1;
+}
+
+.map-zoom button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.map-zoom button:hover {
+  background: var(--green);
+  color: var(--white);
+  border-color: var(--green);
+}
+
 .range-map .sea {
   fill: var(--white);
 }
@@ -795,13 +823,15 @@ footer {
 .range-map .land {
   fill: var(--white);
   stroke: var(--black);
-  stroke-width: 0.9;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 .range-map .native {
   fill: var(--green);
   stroke: var(--black);
-  stroke-width: 0.9;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
 .range-map figcaption {

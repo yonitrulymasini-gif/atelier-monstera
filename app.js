@@ -17,6 +17,7 @@ const state = {
   quizDone: false,
   round: [],
   history: [],
+  mapView: null,
 };
 
 const root = document.getElementById("root");
@@ -115,11 +116,85 @@ function rangeIsos(open) {
   return ISO_ORDER.filter((iso) => codes.has(iso) && window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
 }
 
+const MAP_W = 760;
+const MAP_H = 620;
+const MAP_FULL = { x: 0, y: 0, w: MAP_W, h: MAP_H };
+
+function pathBox(d) {
+  const nums = d.match(/-?\d+\.?\d*/g);
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  if (!nums) return { minX: 0, minY: 0, maxX: MAP_W, maxY: MAP_H };
+  for (let i = 0; i < nums.length - 1; i += 2) {
+    const x = Number(nums[i]);
+    const y = Number(nums[i + 1]);
+    if (x < minX) minX = x;
+    if (y < minY) minY = y;
+    if (x > maxX) maxX = x;
+    if (y > maxY) maxY = y;
+  }
+  return { minX, minY, maxX, maxY };
+}
+
+function fitMapView(open) {
+  const native = rangeIsos(open);
+  const paths = window.AMERICAS_PATHS;
+  if (!paths || !native.length) return { ...MAP_FULL };
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const iso of native) {
+    const box = pathBox(paths[iso]);
+    if (box.minX < minX) minX = box.minX;
+    if (box.minY < minY) minY = box.minY;
+    if (box.maxX > maxX) maxX = box.maxX;
+    if (box.maxY > maxY) maxY = box.maxY;
+  }
+  let w = Math.max(48, maxX - minX);
+  let h = Math.max(48, maxY - minY);
+  const pad = Math.max(28, Math.max(w, h) * 0.2);
+  minX -= pad;
+  minY -= pad;
+  w += pad * 2;
+  h += pad * 2;
+  const aspect = MAP_W / MAP_H;
+  if (w / h > aspect) {
+    const nh = w / aspect;
+    minY -= (nh - h) / 2;
+    h = nh;
+  } else {
+    const nw = h * aspect;
+    minX -= (nw - w) / 2;
+    w = nw;
+  }
+  return { x: minX, y: minY, w, h };
+}
+
+function zoomMap(dir) {
+  const cur = state.mapView || MAP_FULL;
+  const factor = dir === "in" ? 0.72 : 1 / 0.72;
+  let w = cur.w * factor;
+  let h = cur.h * factor;
+  if (dir === "out" && w >= MAP_W * 0.97) {
+    state.mapView = { ...MAP_FULL };
+    return;
+  }
+  w = Math.max(36, Math.min(MAP_W, w));
+  h = w / (MAP_W / MAP_H);
+  const cx = cur.x + cur.w / 2;
+  const cy = cur.y + cur.h / 2;
+  state.mapView = { x: cx - w / 2, y: cy - h / 2, w, h };
+}
+
 function rangeMapHtml(open) {
   const native = rangeIsos(open);
   const paths = window.AMERICAS_PATHS;
   if (!paths || !native.length) return "";
   const names = native.map((iso) => ISO_FR[iso]);
+  const view = state.mapView || fitMapView(open);
   const land = Object.entries(paths)
     .map(([iso, d]) => `<path class="${native.includes(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
     .join("");
@@ -127,8 +202,12 @@ function rangeMapHtml(open) {
     <section class="section tight range">
       <h2 class="mid">Pays d’origine</h2>
       <figure class="range-map">
-        <svg viewBox="0 0 760 620" role="img" aria-label="${esc(names.join(", "))}">
-          <rect class="sea" width="760" height="620" />
+        <div class="map-zoom">
+          <button type="button" data-map-zoom="in" aria-label="Zoomer">+</button>
+          <button type="button" data-map-zoom="out" aria-label="Dézoomer">−</button>
+        </div>
+        <svg viewBox="${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}" role="img" aria-label="${esc(names.join(", "))}">
+          <rect class="sea" x="-200" y="-200" width="1200" height="1000" />
           ${land}
         </svg>
         <figcaption><span class="swatch"></span> ${esc(names.join(" · "))}</figcaption>
@@ -211,6 +290,7 @@ function goBack() {
   if (state.page === "fiche" && !state.open) {
     state.page = "especes";
   }
+  state.mapView = state.page === "fiche" && state.open ? fitMapView(state.open) : null;
   state.query = prev.query || "";
   render();
   window.scrollTo(0, prev.scroll || 0);
@@ -622,11 +702,21 @@ root.addEventListener("click", (e) => {
     return;
   }
 
+  const zoomBtn = e.target.closest("[data-map-zoom]");
+  if (zoomBtn) {
+    const scroll = window.scrollY;
+    zoomMap(zoomBtn.dataset.mapZoom);
+    render();
+    window.scrollTo(0, scroll);
+    return;
+  }
+
   const go = e.target.closest("[data-go]");
   if (go) {
     state.history = [];
     state.page = go.dataset.go;
     state.open = null;
+    state.mapView = null;
     window.scrollTo(0, 0);
     render();
     return;
@@ -637,6 +727,7 @@ root.addEventListener("click", (e) => {
     state.history.push(snapshot());
     state.open = species.find((s) => s.id === openBtn.dataset.open) || null;
     state.page = "fiche";
+    state.mapView = state.open ? fitMapView(state.open) : null;
     window.scrollTo(0, 0);
     render();
     return;
