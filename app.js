@@ -173,20 +173,117 @@ function fitMapView(open) {
   return { x: minX, y: minY, w, h };
 }
 
-function zoomMap(dir) {
+function setMapViewBox(svg, view) {
+  state.mapView = view;
+  if (svg) {
+    svg.setAttribute(
+      "viewBox",
+      `${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}`,
+    );
+  }
+}
+
+function zoomMapByFactor(svg, factor, clientX, clientY) {
   const cur = state.mapView || MAP_FULL;
-  const factor = dir === "in" ? 0.72 : 1 / 0.72;
   let w = cur.w * factor;
   let h = cur.h * factor;
-  if (dir === "out" && w >= MAP_W * 0.97) {
-    state.mapView = { ...MAP_FULL };
+  if (factor > 1 && w >= MAP_W * 0.97) {
+    setMapViewBox(svg, { ...MAP_FULL });
     return;
   }
-  w = Math.max(36, Math.min(MAP_W, w));
+  w = Math.max(28, Math.min(MAP_W, w));
   h = w / (MAP_W / MAP_H);
-  const cx = cur.x + cur.w / 2;
-  const cy = cur.y + cur.h / 2;
-  state.mapView = { x: cx - w / 2, y: cy - h / 2, w, h };
+  const rect = svg ? svg.getBoundingClientRect() : { left: 0, top: 0, width: 1, height: 1 };
+  const px = (clientX - rect.left) / Math.max(1, rect.width);
+  const py = (clientY - rect.top) / Math.max(1, rect.height);
+  setMapViewBox(svg, {
+    x: cur.x + px * cur.w - px * w,
+    y: cur.y + py * cur.h - py * h,
+    w,
+    h,
+  });
+}
+
+function zoomMapAt(svg, dir, clientX, clientY) {
+  zoomMapByFactor(svg, dir === "in" ? 0.78 : 1 / 0.78, clientX, clientY);
+}
+
+function zoomMap(dir) {
+  const svg = document.querySelector(".range-map svg");
+  if (!svg) {
+    const cur = state.mapView || MAP_FULL;
+    const cx = cur.x + cur.w / 2;
+    const cy = cur.y + cur.h / 2;
+    zoomMapAt(null, dir, cx, cy);
+    return;
+  }
+  const rect = svg.getBoundingClientRect();
+  zoomMapAt(svg, dir, rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
+function bindMapInteract() {
+  const svg = document.querySelector(".range-map svg");
+  if (!svg || !state.open) return;
+  if (!state.mapView) state.mapView = fitMapView(state.open);
+
+  const pts = new Map();
+  let lastPan = null;
+  let lastPinch = 0;
+
+  const gap = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+  svg.addEventListener("pointerdown", (e) => {
+    svg.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    svg.classList.add("is-dragging");
+    if (pts.size === 1) lastPan = { x: e.clientX, y: e.clientY };
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      lastPinch = gap(a, b);
+      lastPan = null;
+    }
+  });
+
+  svg.addEventListener("pointermove", (e) => {
+    if (!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const view = state.mapView;
+    const rect = svg.getBoundingClientRect();
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      const d = gap(a, b);
+      if (lastPinch) {
+        zoomMapByFactor(svg, lastPinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2);
+      }
+      lastPinch = d;
+      return;
+    }
+    if (!lastPan) return;
+    const dx = ((e.clientX - lastPan.x) * view.w) / Math.max(1, rect.width);
+    const dy = ((e.clientY - lastPan.y) * view.h) / Math.max(1, rect.height);
+    lastPan = { x: e.clientX, y: e.clientY };
+    setMapViewBox(svg, { ...view, x: view.x - dx, y: view.y - dy });
+  });
+
+  const endPtr = (e) => {
+    pts.delete(e.pointerId);
+    if (pts.size === 1) lastPan = [...pts.values()][0];
+    if (pts.size < 2) lastPinch = 0;
+    if (!pts.size) {
+      lastPan = null;
+      svg.classList.remove("is-dragging");
+    }
+  };
+  svg.addEventListener("pointerup", endPtr);
+  svg.addEventListener("pointercancel", endPtr);
+  svg.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      zoomMapAt(svg, e.deltaY < 0 ? "in" : "out", e.clientX, e.clientY);
+    },
+    { passive: false },
+  );
 }
 
 function rangeMapHtml(open) {
@@ -194,7 +291,8 @@ function rangeMapHtml(open) {
   const paths = window.WORLD_PATHS;
   if (!paths || !native.length) return "";
   const names = native.map((iso) => ISO_FR[iso]);
-  const view = state.mapView || fitMapView(open);
+  if (!state.mapView) state.mapView = fitMapView(open);
+  const view = state.mapView;
   const land = Object.entries(paths)
     .map(([iso, d]) => `<path class="${native.includes(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
     .join("");
@@ -694,6 +792,8 @@ function render() {
       }
     });
   }
+
+  bindMapInteract();
 }
 
 root.addEventListener("click", (e) => {
@@ -704,10 +804,7 @@ root.addEventListener("click", (e) => {
 
   const zoomBtn = e.target.closest("[data-map-zoom]");
   if (zoomBtn) {
-    const scroll = window.scrollY;
     zoomMap(zoomBtn.dataset.mapZoom);
-    render();
-    window.scrollTo(0, scroll);
     return;
   }
 
