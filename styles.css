@@ -29,6 +29,19 @@ body,
 
 html {
   scroll-padding-top: var(--header-space);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --green: #6fbf90;
+  --white: #121212;
+  --black: #f3f3f3;
+}
+
+html[data-theme="dark"] .fiche-hero,
+html[data-theme="dark"] .card-media {
+  background: #0a0a0a;
 }
 
 body {
@@ -90,6 +103,37 @@ input {
   background: var(--white);
 }
 
+.top-row {
+  display: grid;
+  grid-template-columns: 2.7rem 1fr 2.7rem;
+  align-items: center;
+  width: min(920px, 100%);
+}
+
+.theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  justify-self: end;
+  padding: 0;
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .brand {
   border: 0;
   background: none;
@@ -101,8 +145,7 @@ input {
   gap: 0.45rem;
   cursor: pointer;
   width: auto;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   text-align: center;
 }
 

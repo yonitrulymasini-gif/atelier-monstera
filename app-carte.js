@@ -18,9 +18,42 @@ const state = {
   round: [],
   history: [],
   leafletMap: null,
+  theme: "light",
 };
 
 const root = document.getElementById("root");
+
+function readTheme() {
+  try {
+    return localStorage.getItem("atelier-theme") === "dark" ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
+
+function themeIcon(theme) {
+  if (theme === "dark") {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>`;
+}
+
+function applyTheme(theme) {
+  state.theme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = state.theme;
+  try {
+    localStorage.setItem("atelier-theme", state.theme);
+  } catch {
+    /* ignore */
+  }
+  const btn = document.getElementById("theme-toggle");
+  if (btn) {
+    btn.innerHTML = themeIcon(state.theme);
+    btn.setAttribute("aria-label", state.theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre");
+  }
+}
+
+applyTheme(readTheme());
 
 function esc(value) {
   return String(value)
@@ -293,8 +326,8 @@ function siteRoot() {
     return resolved.endsWith("/") ? resolved : resolved + "/";
   }
   let path = location.pathname
-    .replace(/\/(?:now|go|voir|a)\/(?:index\.html)?$/, "/")
-    .replace(/\/(?:now|go|voir|a)\/?$/, "/")
+    .replace(/\/(?:now|go|voir|a|b)\/(?:index\.html)?$/, "/")
+    .replace(/\/(?:now|go|voir|a|b)\/?$/, "/")
     .replace(/\/index\.html$/, "/");
   if (!path.endsWith("/")) path += "/";
   return location.origin + path;
@@ -670,7 +703,11 @@ function render() {
   root.innerHTML = `
     <div class="app">
       <header class="top">
-        <button class="brand" data-go="accueil"><span class="logo" aria-hidden>◈</span> Atelier Monstera</button>
+        <div class="top-row">
+          <span class="top-slot" aria-hidden="true"></span>
+          <button class="brand" data-go="accueil"><span class="logo" aria-hidden>◈</span> Atelier Monstera</button>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="${state.theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}">${themeIcon(state.theme)}</button>
+        </div>
         <nav>
           <div class="nav-side nav-left">
             ${NAV.slice(0, 2)
@@ -709,9 +746,23 @@ function render() {
   }
 
   bindMapInteract();
+
+  const themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      applyTheme(state.theme === "dark" ? "light" : "dark");
+    });
+  }
 }
 
 root.addEventListener("click", (e) => {
+  if (e.target.closest("#theme-toggle")) {
+    applyTheme(state.theme === "dark" ? "light" : "dark");
+    return;
+  }
+
   if (e.target.closest("#go-back")) {
     goBack();
     return;

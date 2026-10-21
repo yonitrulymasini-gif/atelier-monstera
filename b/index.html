@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <base href="../" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Atelier Monstera — tout apprendre sur les Monsteras : espèces, photos, noms, entretien et quiz." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@380;450;550;650&display=swap" rel="stylesheet" />
+    <title>Atelier Monstera — apprendre la plante</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var t = Date.now();
+        var root = new URL("../", location.href).href;
+        var css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = root + "styles-theme.css?t=" + t;
+        document.head.appendChild(css);
+
+        var leafletCss = document.createElement("link");
+        leafletCss.rel = "stylesheet";
+        leafletCss.href = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(leafletCss);
+
+        var files = ["catalog2.js", "data.js", "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js", "app-theme.js"];
+        function next(i) {
+          if (i >= files.length) return;
+          var s = document.createElement("script");
+          s.src = files[i].indexOf("http") === 0 ? files[i] : root + files[i] + "?t=" + t;
+          s.onerror = function () {
+            next(i + 1);
+          };
+          s.onload = function () {
+            next(i + 1);
+          };
+          document.body.appendChild(s);
+        }
+        next(0);
+      })();
+    </script>
+  </body>
+</html>
