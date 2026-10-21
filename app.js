@@ -113,11 +113,11 @@ function rangeIsos(open) {
   for (const bit of placeBits(open)) {
     for (const iso of PLACE_ISO[bit] || []) codes.add(iso);
   }
-  return ISO_ORDER.filter((iso) => codes.has(iso) && window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
+  return ISO_ORDER.filter((iso) => codes.has(iso) && window.WORLD_PATHS && window.WORLD_PATHS[iso]);
 }
 
-const MAP_W = 760;
-const MAP_H = 620;
+const MAP_W = 1000;
+const MAP_H = 500;
 const MAP_FULL = { x: 0, y: 0, w: MAP_W, h: MAP_H };
 
 function pathBox(d) {
@@ -140,7 +140,7 @@ function pathBox(d) {
 
 function fitMapView(open) {
   const native = rangeIsos(open);
-  const paths = window.AMERICAS_PATHS;
+  const paths = window.WORLD_PATHS;
   if (!paths || !native.length) return { ...MAP_FULL };
   let minX = Infinity;
   let minY = Infinity;
@@ -191,7 +191,7 @@ function zoomMap(dir) {
 
 function rangeMapHtml(open) {
   const native = rangeIsos(open);
-  const paths = window.AMERICAS_PATHS;
+  const paths = window.WORLD_PATHS;
   if (!paths || !native.length) return "";
   const names = native.map((iso) => ISO_FR[iso]);
   const view = state.mapView || fitMapView(open);
@@ -207,7 +207,7 @@ function rangeMapHtml(open) {
           <button type="button" data-map-zoom="out" aria-label="Dézoomer">−</button>
         </div>
         <svg viewBox="${view.x.toFixed(1)} ${view.y.toFixed(1)} ${view.w.toFixed(1)} ${view.h.toFixed(1)}" role="img" aria-label="${esc(names.join(", "))}">
-          <rect class="sea" x="-200" y="-200" width="1200" height="1000" />
+          <rect class="sea" x="-80" y="-80" width="1160" height="660" />
           ${land}
         </svg>
         <figcaption><span class="swatch"></span> ${esc(names.join(" · "))}</figcaption>
