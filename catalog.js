@@ -1037,7 +1037,7 @@ window.MONSTERA_CATALOG = [
     origin: "Clone de la collection de Roberto Burle Marx (Rio) ; origine sauvage inconnue",
     difficulty: "Intermédiaire",
     kind: "cultivar",
-    image: "photos/burle-marx-flame.png",
+    image: "photos/burle-marx-flame-v2.jpg",
     credit: "Photo de collection — feuille en flamme",
     size: "Liane ; feuilles très découpées à maturité",
     summary: "Feuilles découpées en lanières étroites, comme une flamme. Cultivar, pas une espèce Kew.",
