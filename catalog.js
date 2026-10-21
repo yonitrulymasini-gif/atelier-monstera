@@ -981,12 +981,11 @@ window.MONSTERA_CATALOG = [
     name: "Monstera deliciosa ‘Aurea’",
     common: ["Aurea", "Marmorata", "jaune"],
     origin: "Mutation de deliciosa, secteurs jaunes / dorés",
-    image: "photos/aurea.png",
-    credit: "Planche botanique",
+    image: "photos/aurea.jpg",
+    credit: "Photo de collection — panachure jaune d’or",
     difficulty: "Avancé",
     kind: "cultivar",
-    summary:
-      "Comme l’Albo, mais le dessin est jaune d’or, pas blanc. Toujours une deliciosa, pas une espèce.",
+    summary: "Feuilles de deliciosa panachées de jaune d’or, parfois presque tout un secteur jaune.",
     description:
       "Les pépinières disent aussi Marmorata. C’est une chimère : le jaune peut reculer ou envahir. Même soin prudent que l’Albo (lumière vive sans soleil, terreau aéré). Ce n’est pas Monstera aureopinnata, espèce sauvage du Pérou.",
     traits: ["Cultivar", "Panachure jaune", "deliciosa"],
@@ -1019,6 +1018,21 @@ window.MONSTERA_CATALOG = [
     description:
       "Le clone aux fenêtres énormes a été pris pour epipremnoides. Après comparaison, on l’a enregistré comme ‘Esqueleto’ (proche de lechleriana selon cette lecture). Grande liane, tuteur, lumière indirecte.",
     traits: ["Cultivar", "Pas epipremnoides"],
+  }),
+  wild({
+    id: "burle-marx-flame",
+    name: "Monstera ‘Burle Marx’s Flame’",
+    common: ["Burle Marx Flame", "Burle Marx", "vendue « dilacerata »"],
+    origin: "Clone de la collection de Roberto Burle Marx (Rio) ; origine sauvage inconnue",
+    difficulty: "Intermédiaire",
+    kind: "cultivar",
+    image: wiki("Monstera Burle marx flame-1-Vishuddhi garden-bengaluru-India.jpg"),
+    credit: "Wikimedia Commons",
+    size: "Liane ; feuilles très découpées à maturité",
+    summary: "Feuilles découpées en lanières étroites, comme une flamme. Cultivar, pas une espèce Kew.",
+    description:
+      "Sortie de la collection de Roberto Burle Marx à Rio, vers 1981. Kew ne la liste pas comme espèce. Le registre des cultivars d’Aracées l’accepte comme nom horticole, sans espèce de base certaine. Jeune, la feuille est entière ; en grimpant, elle se fend en lobes étroits, bien écartés. Ce n’est pas Monstera dilacerata (Kew : synonyme d’Epipremnum pinnatum). Ce n’est pas non plus une deliciosa Albo : ici le dessin, c’est la forme de la feuille, pas une panachure.",
+    traits: ["Cultivar", "Pas une espèce Kew", "Pas dilacerata"],
   }),
   wild({
     id: "adansonii-archipelago",
