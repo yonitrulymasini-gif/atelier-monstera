@@ -85,8 +85,9 @@ window.MONSTERA = {
       {
         title: "Terreau",
         points: [
-          "Mélange aéré : terreau, écorce, perlite.",
-          "La Monstera est une aroïde (même famille que le philodendron) : ses racines veulent de l’air autant que de l’eau, d’où un terreau aéré, pas de la terre compacte.",
+          "Recette simple : 1/3 terreau plantes vertes, 1/3 écorce de pin (ou copeaux de coco), 1/3 perlite — donc environ 30 % de perlite, pas 10 %.",
+          "10 % de perlite, c’est ce qu’il y a souvent dans un sac tout prêt : ça aide un peu, mais le pot reste trop compact et trop longtemps mouillé.",
+          "Les racines d’une Monstera veulent de l’air autant que de l’eau : terre qui respire, jamais de la terre de jardin.",
         ],
       },
       {
@@ -107,9 +108,10 @@ window.MONSTERA = {
       {
         title: "Engrais",
         points: [
-          "Printemps–été : engrais plantes vertes dilué.",
-          "Pause en hiver.",
-          "Formes panachées : dose plus légère.",
+          "Prends un engrais liquide « plantes vertes » (NPK équilibré, du type 7-4-6, 10-10-10 ou 6-4-6). Les chiffres exacts importent moins que la dilution.",
+          "Printemps–été : une fois toutes les 2 semaines, à moitié de la dose écrite sur le flacon, sur un terreau déjà humide.",
+          "Albo, Aurea, Thai : encore plus léger (¼ de dose). Le blanc et le jaune nourrissent peu, trop d’engrais brûle.",
+          "En hiver : on arrête. Pas d’engrais gazon, pas d’engrais tomates.",
         ],
       },
       {
