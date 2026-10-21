@@ -85,8 +85,7 @@ window.MONSTERA = {
       {
         title: "Terreau",
         points: [
-          "Recette simple : 1/3 terreau plantes vertes, 1/3 écorce de pin (ou copeaux de coco), 1/3 perlite — donc environ 30 % de perlite, pas 10 %.",
-          "10 % de perlite, c’est ce qu’il y a souvent dans un sac tout prêt : ça aide un peu, mais le pot reste trop compact et trop longtemps mouillé.",
+          "Recette simple : 1/3 terreau plantes vertes, 1/3 écorce de pin (ou copeaux de coco), 1/3 perlite.",
           "Les racines d’une Monstera veulent de l’air autant que de l’eau : terre qui respire, jamais de la terre de jardin.",
         ],
       },
