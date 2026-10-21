@@ -49,8 +49,60 @@ function placeBits(s) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .match(
-      /mexique|guatemala|belize|honduras|salvador|nicaragua|costa rica|panama|colombie|equateur|perou|bolivie|bresil|guyane|amazonie|antilles|caraibe|thailande|asie/g,
+      /mexique|guatemala|belize|honduras|salvador|nicaragua|costa rica|panama|colombie|equateur|perou|bolivie|bresil|venezuela|guyane|trinite|trinidad|amazonie|antilles|caraibe|amerique centrale|thailande|asie/g,
     ) || [];
+}
+
+const PLACE_ISO = {
+  mexique: ["MX"],
+  guatemala: ["GT"],
+  belize: ["BZ"],
+  honduras: ["HN"],
+  salvador: ["SV"],
+  nicaragua: ["NI"],
+  "costa rica": ["CR"],
+  panama: ["PA"],
+  colombie: ["CO"],
+  equateur: ["EC"],
+  perou: ["PE"],
+  bolivie: ["BO"],
+  bresil: ["BR"],
+  venezuela: ["VE"],
+  guyane: ["GF"],
+  trinite: ["TT"],
+  trinidad: ["TT"],
+  antilles: ["CU", "HT", "DO", "JM", "TT"],
+  caraibe: ["CU", "HT", "DO", "JM", "TT"],
+  "amerique centrale": ["MX", "GT", "BZ", "SV", "HN", "NI", "CR", "PA"],
+};
+
+function rangeIsos(open) {
+  const codes = new Set();
+  for (const bit of placeBits(open)) {
+    for (const iso of PLACE_ISO[bit] || []) codes.add(iso);
+  }
+  return [...codes].filter((iso) => window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
+}
+
+function rangeMapHtml(open) {
+  const native = new Set(rangeIsos(open));
+  const paths = window.AMERICAS_PATHS;
+  if (!paths || !native.size) return "";
+  const land = Object.entries(paths)
+    .map(([iso, d]) => `<path class="${native.has(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
+    .join("");
+  return `
+    <section class="section tight range">
+      <h2 class="mid">Aire</h2>
+      <figure class="range-map">
+        <svg viewBox="0 0 760 620" role="img" aria-label="Carte de l’aire naturelle">
+          <rect class="sea" width="760" height="620" />
+          ${land}
+        </svg>
+        <figcaption><span class="swatch"></span> Pays d’origine</figcaption>
+      </figure>
+    </section>
+  `;
 }
 
 function relatedSpecies(open) {
@@ -457,6 +509,7 @@ function renderFiche() {
         </div>
       </div>
     </article>
+    ${rangeMapHtml(open)}
     <section class="section tight">
       <h2 class="mid">${open.kind === "cultivar" ? "Même plante, autres formes" : open.kind === "lookalike" ? "Souvent confondues" : "Proche de celle-ci"}</h2>
       <div class="grid trio">

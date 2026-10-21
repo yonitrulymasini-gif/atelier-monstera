@@ -771,6 +771,56 @@ footer {
   color: var(--muted);
 }
 
+.range {
+  padding-top: 0.4rem;
+}
+
+.range-map {
+  margin: 0;
+  border: 1px solid var(--black);
+  overflow: hidden;
+}
+
+.range-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+
+.range-map .sea {
+  fill: var(--white);
+}
+
+.range-map .land {
+  fill: var(--white);
+  stroke: var(--black);
+  stroke-width: 0.9;
+}
+
+.range-map .native {
+  fill: var(--green);
+  stroke: var(--black);
+  stroke-width: 0.9;
+}
+
+.range-map figcaption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem 0.85rem;
+  border-top: 1px solid var(--black);
+  font-size: 0.88rem;
+}
+
+.range-map .swatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  background: var(--green);
+  border: 1px solid var(--black);
+  flex-shrink: 0;
+}
+
 @media (max-width: 980px) {
   :root {
     --header-space: 8.4rem;
