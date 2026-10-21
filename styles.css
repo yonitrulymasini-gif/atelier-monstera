@@ -74,13 +74,6 @@ body,
   min-height: 100%;
 }
 
-#lcp-hero {
-  width: 100%;
-  height: min(72vh, 640px);
-  object-fit: cover;
-  display: block;
-}
-
 html {
   scroll-padding-top: var(--header-space);
   color-scheme: light;
@@ -283,6 +276,7 @@ main {
   width: 100%;
   height: min(72vh, 640px);
   object-fit: cover;
+  object-position: center;
   border-radius: 40% 18% 32% 14% / 22% 34% 16% 40%;
   box-shadow: var(--shadow);
 }
@@ -995,9 +989,17 @@ footer {
     gap: 1.6rem;
   }
 
-  .hero img,
+  .hero img {
+    height: auto;
+    aspect-ratio: 3 / 4;
+    max-height: none;
+    border-radius: 28px;
+    object-position: center;
+  }
+
   .portrait img {
-    height: 260px;
+    height: auto;
+    aspect-ratio: 4 / 5;
     border-radius: 24px;
   }
 
@@ -1032,7 +1034,7 @@ footer {
 
   .card-media img,
   .card-media .no-photo {
-    height: 240px;
+    height: 100%;
   }
 
   .card-body {
