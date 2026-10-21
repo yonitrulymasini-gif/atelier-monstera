@@ -201,7 +201,7 @@ function renderSpecies() {
         <h1>${nSp} espèces, plus les mutations</h1>
         <p class="lede">
           Liste calée sur Kew (POWO) : le genre compte aujourd’hui environ 73 espèces acceptées, du Mexique à l’Amazonie.
-          Ici : les espèces, les sous-espèces utiles, les cultivars vraiment documentés (Albo, Thai Con, Aurea, Mint, Esqueleto…)
+          Ici : les 73 espèces acceptées par Kew, les sous-espèces utiles, les cultivars vraiment documentés (Albo, Thai Con, Aurea, Esqueleto…)
           et deux plantes vendues « Monstera » qui n’en sont pas. Les mutations de boutique n’ont pas de fin : on n’invente pas un nom pour chaque tache.
           Une photo seulement si elle est nette et vraiment de cette plante — pas la même deliciosa partout.
         </p>
