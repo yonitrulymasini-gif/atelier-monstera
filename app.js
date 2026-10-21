@@ -284,12 +284,11 @@ function renderSpecies() {
         <p class="eyebrow">Encyclopédie</p>
         <h1>${nSp} espèces, plus les mutations</h1>
         <p class="lede">
-          Liste calée sur Kew (POWO) : le genre compte aujourd’hui environ 73 espèces acceptées, du Mexique à l’Amazonie.
-          Ici : les 73 espèces acceptées par Kew, les sous-espèces utiles, les cultivars vraiment documentés (Albo, Thai Con, Aurea, Esqueleto…)
-          et deux plantes vendues « Monstera » qui n’en sont pas. Les mutations de boutique n’ont pas de fin : on n’invente pas un nom pour chaque tache.
-          Une photo seulement si elle est nette et vraiment de cette plante — pas la même deliciosa partout.
+          Toutes les espèces sauvages reconnues par Kew, du Mexique à l’Amazonie.
+          Ensuite, quelques formes de culture bien connues (Albo, Thai Constellation, Aurea, Esqueleto)
+          et deux plantes vendues « Monstera » qui appartiennent à un autre genre.
+          Tape un nom ou un pays pour filtrer.
         </p>
-        <p class="lede">${nSp} espèces · ${nCv} cultivars · cherche un nom, un pays, « cultivar » ou « pas une Monstera ».</p>
       </header>
       <div class="toolbar">
         <input type="search" id="search" placeholder="Rechercher un nom, un trait, un pays…" value="${esc(state.query)}" aria-label="Rechercher une espèce" />
