@@ -155,7 +155,7 @@ function bindMapInteract() {
   map.setView([17, -93], 4);
   state.leafletMap = map;
 
-  fetch(assetUrl("map-geo.json"))
+  fetch(assetUrl("map-geo.json") + "?v=2")
     .then((r) => r.json())
     .then((geo) => {
       if (!state.leafletMap || state.leafletMap !== map) return;
