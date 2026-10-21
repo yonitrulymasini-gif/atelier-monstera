@@ -115,21 +115,6 @@ function rangeIsos(open) {
   return ISO_ORDER.filter((iso) => codes.has(iso) && window.AMERICAS_PATHS && window.AMERICAS_PATHS[iso]);
 }
 
-function pathCentroid(d) {
-  const ring = (d.split("Z")[0] || d).replace(/[ML]/gi, " ");
-  const nums = ring.match(/-?\d+\.?\d*/g);
-  if (!nums || nums.length < 4) return [380, 310];
-  let sx = 0;
-  let sy = 0;
-  let n = 0;
-  for (let i = 0; i < nums.length - 1; i += 2) {
-    sx += Number(nums[i]);
-    sy += Number(nums[i + 1]);
-    n += 1;
-  }
-  return [sx / n, sy / n];
-}
-
 function rangeMapHtml(open) {
   const native = rangeIsos(open);
   const paths = window.AMERICAS_PATHS;
@@ -138,12 +123,6 @@ function rangeMapHtml(open) {
   const land = Object.entries(paths)
     .map(([iso, d]) => `<path class="${native.includes(iso) ? "native" : "land"}" data-iso="${iso}" d="${d}" />`)
     .join("");
-  const labels = native
-    .map((iso) => {
-      const [x, y] = pathCentroid(paths[iso]);
-      return `<text class="country-name" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${esc(ISO_FR[iso])}</text>`;
-    })
-    .join("");
   return `
     <section class="section tight range">
       <h2 class="mid">Pays d’origine</h2>
@@ -151,7 +130,6 @@ function rangeMapHtml(open) {
         <svg viewBox="0 0 760 620" role="img" aria-label="${esc(names.join(", "))}">
           <rect class="sea" width="760" height="620" />
           ${land}
-          ${labels}
         </svg>
         <figcaption><span class="swatch"></span> ${esc(names.join(" · "))}</figcaption>
       </figure>
