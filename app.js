@@ -394,12 +394,24 @@ function goBack() {
   window.scrollTo(0, prev.scroll || 0);
 }
 
+function siteRoot() {
+  let path = location.pathname.replace(/\/now\/(?:index\.html)?$/, "/").replace(/\/now\/?$/, "/");
+  path = path.replace(/\/index\.html$/, "/");
+  if (!path.endsWith("/")) path += "/";
+  return location.origin + path;
+}
+
+function assetUrl(src) {
+  if (!src || /^(https?:|data:|\/)/i.test(src)) return src;
+  return siteRoot() + src;
+}
+
 function photoBlock(s, alt) {
   if (!s.image) {
     return `<div class="no-photo"><span>Pas de photo de cette espèce</span></div>`;
   }
   const fit = s.imageFit === "contain" ? " contain" : "";
-  return `<img class="${fit.trim()}" src="${s.image}" alt="${esc(alt)}" />`;
+  return `<img class="${fit.trim()}" src="${esc(assetUrl(s.image))}" alt="${esc(alt)}" />`;
 }
 
 const HOME_BLURB = {
