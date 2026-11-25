@@ -60,9 +60,20 @@ window.MONSTERA = {
         "Pour passer à la forme adulte, il faut souvent grimper et avoir plus de lumière.",
       ],
     },
+    {
+      title: "Small form et large form",
+      explain:
+        "Deux noms de vente pour deux « formats » de deliciosa. Botaniquement, c’est la même espèce : Kew range « borsigiana » (la small form) sous Monstera deliciosa.",
+      points: [
+        "Small form (souvent vendue « Borsigiana ») : feuilles plus petites, tige plus fine, espaces plus longs entre les nœuds. Elle court et grimpe vite.",
+        "Large form : grandes feuilles plus larges, tige épaisse, nœuds serrés. Elle pousse plus lentement, mais devient massive.",
+        "Le bon indice : le « genou » en haut du pétiole, juste sous la feuille. Sur la large form, il est ondulé, plissé comme une collerette. Sur la small form, il reste lisse.",
+        "Attention : une large form qui manque de lumière s’étire aussi. Des nœuds espacés ne suffisent pas pour dire « small form ».",
+      ],
+    },
   ],
   care: {
-    lead: "Les mêmes gestes valent pour deliciosa, adansonii et l’obliqua de magasin. Lumière d’abord, puis l’eau et un terreau qui respire.",
+    lead: "Les mêmes gestes valent pour deliciosa, adansonii, l’obliqua de magasin, Thai Constellation et Rhaphidophora tetrasperma. Lumière d’abord, puis l’eau et un terreau qui respire.",
     steps: [
       {
         title: "Lumière",
@@ -85,8 +96,8 @@ window.MONSTERA = {
       {
         title: "Terreau",
         points: [
-          "Recette simple : 1/3 terreau plantes vertes, 1/3 écorce de pin (ou copeaux de coco), 1/3 perlite.",
-          "Les racines d’une Monstera veulent de l’air autant que de l’eau : terre qui respire, jamais de la terre de jardin.",
+          "Lombricompost, perlite, fibre de coco, charbon actif, chips de coco.",
+          "Terre qui respire, jamais de la terre de jardin.",
         ],
       },
       {

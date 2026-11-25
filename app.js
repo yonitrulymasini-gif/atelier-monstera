@@ -65,7 +65,7 @@ function esc(value) {
     .replaceAll('"', "&quot;");
 }
 
-const KIND_RANK = { species: 0, subspecies: 1, cultivar: 2, lookalike: 3 };
+const KIND_RANK = { species: 0, subspecies: 1, lookalike: 2, cultivar: 3 };
 
 function plantStem(s) {
   return s.name
@@ -367,21 +367,116 @@ function sizedSrc(src, w) {
   return src;
 }
 
+function plantPhotos(s) {
+  if (s.photos && s.photos.length) return s.photos;
+  return s.image ? [{ src: s.image, credit: s.credit, fit: s.imageFit || "" }] : [];
+}
+
+// Plusieurs tailles de la même photo : le navigateur prend la plus nette utile pour l’écran.
+function srcSet(src) {
+  if (/Special:FilePath/i.test(src)) {
+    // Wikimedia ne sert que ces largeurs (sinon il arrondit au palier au-dessus).
+    return [960, 1280, 1920].map((w) => `${src.replace(/([?&]width=)\d+/i, `$1${w}`)} ${w}w`).join(", ");
+  }
+  if (/inaturalist.*\/photos\/\d+\/(large|original|medium)\./i.test(src)) {
+    const at = (size) => src.replace(/\/(large|original|medium)\./i, `/${size}.`);
+    // iNaturalist limite le grand côté (500 / 1024 / 2048 px) : on annonce la largeur d’une photo en hauteur, pour ne jamais être flou.
+    return `${at("medium")} 330w, ${at("large")} 680w, ${at("original")} 1360w`;
+  }
+  return "";
+}
+
+function photoImg(p, alt, eager, first) {
+  const w = eager ? 1100 : 720;
+  const src = sizedSrc(assetUrl(p.src), w);
+  const set = srcSet(src);
+  const sizes = eager ? "(max-width: 980px) 100vw, 50vw" : "(max-width: 980px) 88vw, 33vw";
+  const size = eager ? `width="1100" height="1400"` : `width="720" height="540"`;
+  const load = eager && first ? `fetchpriority="high" decoding="async"` : `loading="lazy" decoding="async"`;
+  const cls = p.fit === "contain" ? ` class="contain"` : "";
+  // Dans la liste, les photos cachées ne se chargent qu’au toucher / survol de la carte.
+  const pre = eager || first ? "" : "data-";
+  const srcset = set ? ` ${pre}srcset="${esc(set)}" sizes="${sizes}"` : "";
+  return `<img${cls} ${pre}src="${esc(src)}"${srcset} alt="${esc(alt)}" ${size} ${load} />`;
+}
+
+function wakeSlider(slider) {
+  if (!slider || slider.dataset.awake) return;
+  slider.dataset.awake = "1";
+  slider.querySelectorAll("img[data-src]").forEach((img) => {
+    if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+    img.src = img.dataset.src;
+    img.removeAttribute("data-src");
+    img.removeAttribute("data-srcset");
+  });
+}
+
+["pointerover", "touchstart", "focusin"].forEach((type) => {
+  document.addEventListener(
+    type,
+    (e) => {
+      const slider = e.target.closest && e.target.closest(".slider");
+      if (slider) wakeSlider(slider);
+    },
+    { passive: true },
+  );
+});
+
 function photoBlock(s, alt, opts) {
   opts = opts || {};
-  if (!s.image) {
+  const photos = plantPhotos(s);
+  if (!photos.length) {
     return `<div class="no-photo"><span>Pas de photo de cette espèce</span></div>`;
   }
-  const fit = s.imageFit === "contain" ? " contain" : "";
   const eager = !!opts.eager;
-  const w = eager ? 1100 : 720;
-  const src = sizedSrc(assetUrl(s.image), w);
-  const size = eager ? `width="1100" height="1400"` : `width="720" height="540"`;
-  const extra = eager
-    ? `fetchpriority="high" decoding="async"`
-    : `loading="lazy" decoding="async"`;
-  return `<img class="${fit.trim()}" src="${esc(src)}" alt="${esc(alt)}" ${size} ${extra} />`;
+  if (photos.length === 1 || opts.single) return photoImg(photos[0], alt, eager, true);
+  return `
+    <div class="slider">
+      <div class="slides" data-slides>
+        ${photos.map((p, i) => photoImg(p, `${alt} — photo ${i + 1}`, eager, i === 0)).join("")}
+      </div>
+      <button type="button" class="slide-arrow prev" data-slide="-1" aria-label="Photo précédente">‹</button>
+      <button type="button" class="slide-arrow next" data-slide="1" aria-label="Photo suivante">›</button>
+      <div class="dots">
+        ${photos.map((_, i) => `<button type="button" class="dot${i === 0 ? " on" : ""}" data-dot="${i}" aria-label="Photo ${i + 1} sur ${photos.length}"></button>`).join("")}
+      </div>
+    </div>`;
 }
+
+function slideIndex(track) {
+  return Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+}
+
+function goToSlide(track, i) {
+  wakeSlider(track.closest(".slider"));
+  const n = track.children.length;
+  const target = (i + n) % n;
+  track.scrollTo({ left: target * track.clientWidth, behavior: "smooth" });
+}
+
+function syncSlider(track) {
+  const slider = track.closest(".slider");
+  if (!slider) return;
+  const i = slideIndex(track);
+  slider.querySelectorAll(".dot").forEach((d, j) => d.classList.toggle("on", j === i));
+  if (track.closest(".fiche-hero") && state.open) {
+    const p = plantPhotos(state.open)[i];
+    const credit = document.getElementById("photo-credit");
+    if (p && credit) credit.textContent = p.credit || "";
+  }
+}
+
+document.addEventListener(
+  "scroll",
+  (e) => {
+    const t = e.target;
+    if (t && t.matches && t.matches("[data-slides]")) {
+      wakeSlider(t.closest(".slider"));
+      syncSlider(t);
+    }
+  },
+  true,
+);
 
 const HOME_BLURB = {
   deliciosa: "Grandes feuilles vertes, d’abord entières, puis découpées et trouées.",
@@ -408,7 +503,7 @@ function renderHome() {
         </div>
       </div>
       <figure>
-        <img id="lcp-hero" src="${esc(assetUrl("photos/hero-mur.webp"))}" width="720" height="960" fetchpriority="high" decoding="async" alt="Feuille de Monstera deliciosa" style="width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center;border-radius:28px;display:block" />
+        <img id="lcp-hero" src="${esc(assetUrl("photos/hero-mur.webp"))}" srcset="${esc(assetUrl("photos/hero-mur.webp"))} 720w, ${esc(assetUrl("photos/hero-mur-1200.webp"))} 1200w" sizes="(max-width: 980px) 90vw, 45vw" width="720" height="960" fetchpriority="high" decoding="async" alt="Feuille de Monstera deliciosa" style="width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center;border-radius:28px;display:block" />
       </figure>
     </section>
     <section class="section tight">
@@ -498,7 +593,7 @@ function renderAnatomy() {
       </header>
       <div class="care-split">
         <figure class="portrait">
-          <img src="${esc(assetUrl("photos/anatomy-leaf.webp"))}" width="640" height="480" loading="lazy" decoding="async" alt="Feuille découpée de Monstera deliciosa" />
+          <img src="${esc(assetUrl("photos/anatomy-leaf-hd.webp"))}" width="1600" height="1200" loading="lazy" decoding="async" alt="Feuille découpée de Monstera deliciosa" />
         </figure>
         <div class="care-list">${steps}</div>
       </div>
@@ -528,7 +623,7 @@ function renderCare() {
       </header>
       <div class="care-split">
         <figure class="portrait">
-          <img src="${esc(assetUrl("photos/home-deliciosa.webp"))}" width="640" height="480" loading="lazy" decoding="async" alt="Monstera deliciosa en culture" />
+          <img src="${esc(assetUrl("photos/entretien-hd.webp"))}" width="1600" height="1200" loading="lazy" decoding="async" alt="Monstera deliciosa en culture" />
         </figure>
         <div class="care-list">${steps}</div>
       </div>
@@ -692,7 +787,7 @@ function renderFiche() {
           <li><span>Lumière</span>${esc(open.light)}</li>
             <li><span>Eau</span>${esc(open.water)}</li>
           </ul>
-          <p class="credit">Photo : ${esc(open.credit)}</p>
+          <p class="credit">Photo : <span id="photo-credit">${esc((plantPhotos(open)[0] || {}).credit || open.credit)}</span></p>
         <div class="fiche-nav">
           <button class="cta ghost" data-open="${prev.id}">← ${esc(prev.name)}</button>
           <button class="cta ghost" data-open="${next.id}">${esc(next.name)} →</button>
@@ -807,6 +902,15 @@ root.addEventListener("click", (e) => {
 
   if (e.target.closest("#go-back")) {
     goBack();
+    return;
+  }
+
+  const dot = e.target.closest("[data-dot]");
+  const arrow = e.target.closest("[data-slide]");
+  if (dot || arrow) {
+    const track = (dot || arrow).closest(".slider").querySelector("[data-slides]");
+    if (dot) goToSlide(track, Number(dot.dataset.dot));
+    else goToSlide(track, slideIndex(track) + Number(arrow.dataset.slide));
     return;
   }
 
