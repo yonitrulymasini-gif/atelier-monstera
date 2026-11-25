@@ -15,6 +15,7 @@ const state = {
   answers: {},
   quizIndex: 0,
   quizDone: false,
+  quizMode: null,
   round: [],
   history: [],
   leafletMap: null,
@@ -647,15 +648,38 @@ function shuffle(list) {
 function mixQuestion(item) {
   const order = shuffle(item.options.map((_, i) => i));
   return {
-    q: item.q,
-    why: item.why,
+    ...item,
     options: order.map((i) => item.options[i]),
     answer: order.indexOf(item.answer),
   };
 }
 
+// Quiz photo : une photo, le bon nom et 3 faux noms.
+// Deux faux noms viennent du même groupe (espèce ou cultivar) pour que ce ne soit pas trop facile.
+function photoQuestion(plant) {
+  const pics = plant.photos.length ? plant.photos : [{ src: plant.image, credit: plant.credit, fit: plant.imageFit }];
+  const pic = pics[Math.floor(Math.random() * pics.length)];
+  const group = (p) => (p.kind === "cultivar" ? "cultivar" : "wild");
+  const others = species.filter((p) => p.id !== plant.id && p.name !== plant.name);
+  const near = shuffle(others.filter((p) => group(p) === group(plant))).slice(0, 2);
+  const far = shuffle(others.filter((p) => !near.includes(p))).slice(0, 3 - near.length);
+  return mixQuestion({
+    q: "Quelle est cette plante ?",
+    img: pic.src,
+    fit: pic.fit,
+    credit: pic.credit,
+    id: plant.id,
+    options: [plant.name, ...near.map((p) => p.name), ...far.map((p) => p.name)],
+    answer: 0,
+    why: `C’est ${plant.name}. ${plant.summary}`,
+  });
+}
+
 function dealQuiz() {
-  state.round = shuffle(quiz).slice(0, QUIZ_LEN).map(mixQuestion);
+  state.round =
+    state.quizMode === "photo"
+      ? shuffle(species.filter((p) => p.image)).slice(0, QUIZ_LEN).map(photoQuestion)
+      : shuffle(quiz).slice(0, QUIZ_LEN).map(mixQuestion);
   state.answers = {};
   state.quizIndex = 0;
   state.quizDone = false;
@@ -671,6 +695,11 @@ function quizScore() {
 }
 
 function quizMessage(score) {
+  if (state.quizMode === "photo") {
+    if (score === QUIZ_LEN) return "Parfait. Tu reconnais tes Monsteras au premier coup d’œil.";
+    if (score >= 3) return "Bien vu. Rejoue : les photos changent à chaque partie.";
+    return "Ça viendra. Feuillette les fiches Espèces, puis rejoue : les photos changent à chaque partie.";
+  }
   if (score === QUIZ_LEN) return "Parfait. Tu peux expliquer une Monstera sans mélanger les noms.";
   if (score >= 4) return "Très bien. Relis juste les questions ratées, ça va coller.";
   if (score === 3) return "Pas mal. Un tour dans Anatomie et Entretien et tu gagnes des points.";
@@ -681,7 +710,36 @@ function resetQuiz() {
   dealQuiz();
 }
 
+function quizPhoto(item, small) {
+  if (!item.img) return "";
+  const set = srcSet(item.img);
+  const sizes = small ? "96px" : "(max-width: 700px) 92vw, 640px";
+  return `<img src="${esc(item.img)}" ${set ? `srcset="${esc(set)}" sizes="${sizes}"` : ""} alt="Photo de la plante à reconnaître" decoding="async" />`;
+}
+
+function renderQuizChoice() {
+  return `
+    <section class="section quiz-page">
+      <div class="quiz-card">
+        <p class="eyebrow">Quiz · ${QUIZ_LEN} questions</p>
+        <h1 class="q-title">Comment veux-tu jouer ?</h1>
+        <div class="quiz-modes">
+          <button class="quiz-mode" data-quiz-mode="photo">
+            <strong>Reconnaître en photo</strong>
+            <span>Une photo de plante, quatre noms : trouve le bon. Le meilleur moyen d’apprendre à reconnaître les Monsteras.</span>
+          </button>
+          <button class="quiz-mode" data-quiz-mode="text">
+            <strong>Questions écrites</strong>
+            <span>Les noms, l’anatomie et l’entretien, avec quatre réponses à chaque fois.</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function renderQuiz() {
+  if (!state.quizMode) return renderQuizChoice();
   const round = currentQuiz();
   if (state.quizDone) {
     const score = quizScore();
@@ -702,11 +760,14 @@ function renderQuiz() {
                   ${missed
                     .map(
                       ({ item, i }) => `
-                    <article>
+                    <article class="${item.img ? "has-img" : ""}">
+                      ${item.img ? `<div class="quiz-thumb ${item.fit === "contain" ? "contain" : ""}">${quizPhoto(item, true)}</div>` : ""}
+                      <div>
                       <p class="q-title">${i + 1}. ${esc(item.q)}</p>
                       <p>Ta réponse : ${esc(item.options[state.answers[i]] ?? "—")}</p>
                       <p>La bonne : ${esc(item.options[item.answer])}</p>
                       <p class="why">${esc(item.why)}</p>
+                      </div>
                     </article>`,
                     )
                     .join("")}
@@ -714,8 +775,8 @@ function renderQuiz() {
               : ""
           }
           <div class="quiz-actions">
-            <button class="cta" id="reset-quiz">Recommencer</button>
-            <button class="cta ghost" data-go="anatomie">Lire l’anatomie</button>
+            <button class="cta" id="reset-quiz">Rejouer</button>
+            <button class="cta ghost" id="quiz-mode-change">Changer de quiz</button>
           </div>
         </div>
       </section>
@@ -746,6 +807,14 @@ function renderQuiz() {
           <div class="quiz-bar" aria-hidden="true"><span style="width:${((i + (revealed ? 1 : 0)) / QUIZ_LEN) * 100}%"></span></div>
         </div>
         <h1 class="q-title">${esc(item.q)}</h1>
+        ${
+          item.img
+            ? `<figure class="quiz-photo ${item.fit === "contain" ? "contain" : ""}">
+                ${quizPhoto(item)}
+                ${revealed && item.credit ? `<figcaption>Photo : ${esc(item.credit)}</figcaption>` : ""}
+              </figure>`
+            : ""
+        }
         <div class="options">${options}</div>
         ${
           revealed
@@ -754,6 +823,7 @@ function renderQuiz() {
               </div>
               <div class="quiz-actions">
                 <button class="cta" id="${last ? "quiz-finish" : "quiz-next"}">${last ? "Voir mon score" : "Question suivante"}</button>
+                ${item.id ? `<button class="cta ghost" data-open="${esc(item.id)}">Voir la fiche</button>` : ""}
               </div>`
             : `<p class="quiz-hint">Choisis une réponse. La correction s’affiche tout de suite.</p>`
         }
@@ -922,6 +992,10 @@ root.addEventListener("click", (e) => {
 
   const go = e.target.closest("[data-go]");
   if (go) {
+    if (go.dataset.go === "quiz") {
+      state.quizMode = null;
+      state.round = [];
+    }
     state.history = [];
     state.page = go.dataset.go;
     state.open = null;
@@ -964,6 +1038,23 @@ root.addEventListener("click", (e) => {
 
   if (e.target.id === "reset-quiz") {
     resetQuiz();
+    window.scrollTo(0, 0);
+    render();
+    return;
+  }
+
+  const modeBtn = e.target.closest("[data-quiz-mode]");
+  if (modeBtn) {
+    state.quizMode = modeBtn.dataset.quizMode;
+    dealQuiz();
+    window.scrollTo(0, 0);
+    render();
+    return;
+  }
+
+  if (e.target.id === "quiz-mode-change") {
+    state.quizMode = null;
+    state.round = [];
     window.scrollTo(0, 0);
     render();
     return;

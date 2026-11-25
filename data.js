@@ -65,7 +65,7 @@ window.MONSTERA = {
       explain:
         "Deux noms de vente pour deux « formats » de deliciosa. Botaniquement, c’est la même espèce : Kew range « borsigiana » (la small form) sous Monstera deliciosa.",
       points: [
-        "Small form (souvent vendue « Borsigiana ») : feuilles plus petites, tige plus fine, espaces plus longs entre les nœuds. Elle court et grimpe vite.",
+        "Small form (souvent vendue « Borsigiana ») : feuilles plus petites, tige plus fine, espaces plus longs entre les nœuds. Sa tige s’allonge vite : elle prend de la hauteur plus vite qu’elle ne grossit.",
         "Large form : grandes feuilles plus larges, tige épaisse, nœuds serrés. Elle pousse plus lentement, mais devient massive.",
         "Le bon indice : le « genou » en haut du pétiole, juste sous la feuille. Sur la large form, il est ondulé, plissé comme une collerette. Sur la small form, il reste lisse.",
         "Attention : une large form qui manque de lumière s’étire aussi. Des nœuds espacés ne suffisent pas pour dire « small form ».",
