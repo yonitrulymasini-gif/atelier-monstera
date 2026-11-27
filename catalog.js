@@ -620,6 +620,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "mittermeieri",
     name: "Monstera mittermeieri",
+    image: "photos/mittermeieri.webp",
+    credit: "Photo de collection — plante présentée comme M. mittermeieri",
     common: ["mittermeieri"],
     origin: "Costa Rica (Cedeño)",
     summary: "Espèce dédiée, Costa Rica. Acceptée par Kew.",
@@ -700,6 +702,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "colossica",
     name: "Monstera colossica",
+    image: "photos/colossica.webp",
+    credit: "Photo de collection — feuille de M. colossica",
     common: ["colossica"],
     origin: "Panama (Cedeño & Ortiz)",
     summary: "Encore un nom qui dit « colossal ». Espèce panaméenne acceptée.",
@@ -709,6 +713,9 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "corana",
     name: "Monstera corana",
+    image: "photos/corana.webp",
+    imageFit: "contain",
+    credit: "Planche publiée avec la description de l’espèce",
     common: ["corana"],
     origin: "Panama (Cedeño & Ortiz)",
     summary: "Espèce panaméenne récente. Acceptée.",
@@ -753,6 +760,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "ngabensis",
     name: "Monstera ngabensis",
+    image: "photos/ngabensis.webp",
+    credit: "Photo de collection — feuille et inflorescence de M. ngabensis",
     common: ["ngabensis"],
     origin: "Comarque Ngäbe-Buglé, Panama (Croat, 2024)",
     summary: "Nouvelle espèce 2024, nommée d’après le territoire ngäbe.",
@@ -762,6 +771,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "harrisoniorum",
     name: "Monstera harrisoniorum",
+    image: "photos/harrisoniorum.webp",
+    credit: "Photo de collection — M. harrisoniorum en pot",
     common: ["harrisoniorum"],
     origin: "Panama, Santa Rita Ridge (Croat, Cedeño & Ortiz, 2024)",
     summary: "Espèce panaméenne acceptée par Kew. Dédiée à Jerry et Linda Harrison.",
@@ -771,6 +782,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "caribaea",
     name: "Monstera caribaea",
+    image: "photos/caribaea.webp",
+    credit: "Photo de collection — M. caribaea grimpant sur un tronc",
     common: ["caribaea"],
     origin: "Caraïbe (Cedeño, Ortiz & Hay) — acceptée Kew",
     summary: "Espèce caribéenne récemment reconnue. Pas « toutes les Monsteras des Antilles ».",
@@ -836,6 +849,8 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "lamersiana",
     name: "Monstera lamersiana",
+    image: "photos/lamersiana.webp",
+    credit: "Photo de collection — M. lamersiana grimpant sur un tronc",
     common: ["lamersiana"],
     origin: "Costa Rica, versant caraïbe (Cedeño & Hay, 2023)",
     summary: "Espèce costaricienne acceptée par Kew. Jeune, elle plaque ses feuilles au tronc.",
@@ -945,6 +960,9 @@ window.MONSTERA_CATALOG = [
   wild({
     id: "vasquezii",
     name: "Monstera vasquezii",
+    image: "photos/vasquezii.webp",
+    imageFit: "contain",
+    credit: "Planches d’herbier de l’espèce (Croat 187458, herbier du Missouri Botanical Garden)",
     common: ["vasquezii"],
     origin: "Pérou (Croat)",
     summary: "Espèce péruvienne dédiée. Acceptée.",
